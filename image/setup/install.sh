@@ -10,6 +10,9 @@ function do_apt_install() {
     apt-get install -y --no-install-recommends $*
 }
 
+# Use a proxy if we have one set up
+/setup/apt_setproxy on
+
 # Update indices
 apt-get update
 
@@ -59,6 +62,9 @@ update-locale LANG=en_US.UTF-8 LC_CTYPE=en_US.UTF-8
 # Miscellaneous useful utilities
 do_apt_install nano
 
+# Install prebuilt binaries
+(cd /; tar xzf /setup/bin/setproctitle-install.tar.gz)
+
 # Install pip and chaperone
 do_apt_install python3-pip
 pip3 install chaperone
@@ -85,9 +91,13 @@ sed -i 's/nullok_secure/nullok/' /etc/pam.d/common-auth
 # Create default /apps directory
 cp -a /setup/apps /
 
-# Now do some cleanups
+# Clean up apt
 apt-get clean
-rm -rf /setup
-rm -rf /tmp/* /var/tmp/*
+/setup/apt_setproxy off
 rm -rf /var/lib/apt/lists/*
 rm -f /etc/dpkg/dpkg.cfg.d/02apt-speedup
+
+# Do other cleanups
+rm -rf /setup
+rm -rf /tmp/* /var/tmp/*
+rm -f `find /apps -name '*~'`
