@@ -28,11 +28,11 @@ mkdir /build
 git clone https://github.com/dvarrazzo/py-setproctitle.git
 cd py-setproctitle
 python3 setup.py bdist
-mkdir /setup/bin
+mkdir /setup/lib
 
 echo Copy them to our shared mount bin...
 cd dist
-cp -v setproctitle-*.gz /setup/bin/setproctitle-install.tar.gz
+cp -v setproctitle-*.gz /setup/lib/setproctitle-install.tar.gz
 chown -R --reference /setup/create-binaries.sh /setup/bin
 
 EOF

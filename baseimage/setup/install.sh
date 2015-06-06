@@ -1,4 +1,4 @@
-#!/bin/bash
+#!bin/bash
 
 # Preamble derived from the prepare.sh script from https://github.com/phusion/baseimage-docker.
 # Thank you, phusion, for all the lessons learned.
@@ -13,9 +13,6 @@ function do_apt_install() {
 # Use a proxy if we have one set up
 /setup/apt_setproxy on
 
-# Update indices
-apt-get update
-
 ## Temporarily disable dpkg fsync to make building faster.
 if [[ ! -e /etc/dpkg/dpkg.cfg.d/docker-apt-speedup ]]; then
 	echo force-unsafe-io > /etc/dpkg/dpkg.cfg.d/docker-apt-speedup
@@ -25,8 +22,6 @@ fi
 ## https://journal.paul.querna.org/articles/2013/10/15/docker-ubuntu-on-rackspace/
 ## http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=594189
 export INITRD=no
-mkdir -p /etc/container_environment
-echo -n no > /etc/container_environment/INITRD
 
 ## Enable Ubuntu Universe and Multiverse.
 sed -i 's/^#\s*\(deb.*universe\)$/\1/g' /etc/apt/sources.list
@@ -63,7 +58,7 @@ update-locale LANG=en_US.UTF-8 LC_CTYPE=en_US.UTF-8
 do_apt_install nano
 
 # Install prebuilt binaries
-(cd /; tar xzf /setup/bin/setproctitle-install.tar.gz)
+(cd /; tar xzf /setup/lib/setproctitle-install.tar.gz)
 
 # Install pip and chaperone
 do_apt_install python3-pip

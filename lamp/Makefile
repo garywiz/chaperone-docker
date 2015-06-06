@@ -1,19 +1,14 @@
 include ../include/make.inc
 
-NAME = garywiz/chaperone-baseimage
+NAME = garywiz/chaperone-lamp
 VERSION = 0.1.5.0		# C.C.C.X where C.C.C is chaperone version used in this release
 
 .PHONY: all build binaries
 
 all: build
 
-build:   binaries
+build:
 	$(DOCKER_BUILD)
 
-rebuild: binaries
+rebuild:
 	$(DOCKER_REBUILD)
-
-binaries: setup/lib/setproctitle-install.tar.gz
-
-setup/lib/setproctitle-install.tar.gz:
-	./setup/create-binaries.sh	
