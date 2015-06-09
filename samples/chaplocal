@@ -1,0 +1,122 @@
+#!/bin/bash
+# Little script to run a chaperone docker container in the local directory
+# for development or other purposes.
+
+if [ "$1" == '-d' ]; then
+   runopts="-d"
+   shift
+else
+   runopts=""
+fi
+
+if [ $# != 2 ]; then
+   echo ""
+   echo "Usage: runlocal [-d] image-name local-apps-dir"
+   echo ""
+   echo "Runs the specified chaperone image and uses local-apps-dir for the apps"
+   echo "directory.  Creates a script in local-apps-dir called run.sh so you can"
+   echo "run an interactive (default) or daemon instance."
+   echo ""
+   echo "Will run all container processes under the current user account with the"
+   echo "local drive mounted as a shared volume in the container."
+   echo ""
+   exit
+fi
+
+IMAGE="$1"
+APPSBASE="$2"
+LOCALROOT=$PWD
+
+APPSDIR=$LOCALROOT/$APPSBASE
+
+# Assure we're running in /home
+if [ "${PWD:0:6}" != "/home/" ]; then
+  echo "Sorry, this script is designed to operate only within the /home directory"
+  echo "of your host. :-("
+  exit 1
+fi
+
+# Extract our local UID/GID
+myuid=`id -u`
+mygid=`id -g`
+
+if [[ "$IMAGE" != *":"* ]]; then
+  IMAGE=$IMAGE:latest
+fi
+
+if [ "`docker inspect $IMAGE >/dev/null 2>&1 && echo yes`" != "yes" ]; then
+  echo ""
+  echo Cannot find local docker image: $IMAGE
+  echo ""
+  echo You may want to pull the image with \"docker pull $IMAGE\" 
+  echo and then try again.
+  exit 1
+fi
+
+function initapps() {
+
+cat >$APPSDIR/bash.bashrc <<EOF
+export PROMPT_DIRTRIM=2
+# Created by chaplocal
+cd $APPSDIR
+echo ""
+echo "Now running inside container. Directory is: $APPSDIR"
+EOF
+
+cat >$APPSDIR/run.sh <<EOF
+#!/bin/bash
+#Created by chaplocal on `date`
+
+cd \${0%/*} # go to directory of this file
+APPS=\$PWD
+cd ..
+
+options="-t -i -e TERM=\$TERM --rm=true"
+shellopt="/bin/bash --rcfile \$APPS/bash.bashrc"
+if [ "\$1" == '-d' ]; then
+  shift
+  options="-d"
+  shellopt=""
+fi
+
+if [ "\$1" == "-h" ]; then
+  echo "Usage: run.sh [-d] [-h] [extra-chaperone-options]"
+  echo "       Run $IMAGE as a daemon or interactively (the default)."
+  exit
+fi
+
+# Run the image with this directory as our local apps dir.
+# Create a user '$USER' with uid=$myuid inside the container so the mountpoint permissions
+# are correct.
+
+docker run \$options -v /home:/home $IMAGE \\
+   --create $USER/$myuid --config \$APPS/chaperone.d \$* \$shellopt
+EOF
+chmod ugo+x $APPSDIR/run.sh
+}
+
+# Copy the boilerplate apps directory into this development directory where it can be
+# worked on easily.
+if [ ! -d $APPSDIR ]; then
+    echo ""
+    echo Extracting /apps default directory into $APPSDIR ...
+    docker run -i --rm=true -v /home:/home $IMAGE --disable --exitkills --log err \
+	/bin/bash -c "cp -a /apps $APPSDIR; chown -R $myuid:$mygid $APPSDIR"
+    initapps
+    echo "You can customize the contents of $APPSDIR to tailor it for your application,"
+    echo "then use it as a template for your production image."
+    echo ""
+    echo Executing run.sh within $APPSDIR ...
+    echo ""
+elif [ ! -f $APPSDIR/run.sh ]; then
+    echo "$APPSDIR already exists but doesn't seem to be one I created (no run.sh in there)"
+    echo "You're on your own"
+    exit 1
+else
+    echo ""
+    echo $APPSDIR already exists.
+    echo Executing run.sh within $APPSDIR ...
+    echo ""
+fi
+
+$APPSDIR/run.sh $runopts

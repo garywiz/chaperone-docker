@@ -1,0 +1,15 @@
+Any useful tools or utilities will be stored here.
+
+Notably, chaplocal is a cool and easy way to create "development containers" instantly
+based upon chaperone-baseimage or chaperone-lamp.
+
+For example, if you say:
+    ./chaplocal garywiz/chaperone-lamp devtest
+
+... you will automatically have a new directory devtest which contains a complete running
+application "world" which is owned by you.  Both Apache and MySQL will be running under your
+user account, and all development and log files can be inspected and managed easily.
+
+When you've got your apps directory set up, all you need to do is copy it to '/' and create
+a container image with your own /apps hierarchy.  Running it normally without the chaperone
+--create option should then run a production instance of your application or service.

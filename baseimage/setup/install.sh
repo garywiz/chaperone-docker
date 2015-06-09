@@ -55,7 +55,7 @@ locale-gen en_US
 update-locale LANG=en_US.UTF-8 LC_CTYPE=en_US.UTF-8
 
 # Miscellaneous useful utilities
-do_apt_install nano
+do_apt_install nano curl less vim psmisc
 
 # Install prebuilt binaries
 (cd /; tar xzf /setup/lib/setproctitle-install.tar.gz)
