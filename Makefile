@@ -1,6 +1,6 @@
 .PHONY: all build-baseimage build-lamp
 
-all: build-lamp
+all: build-baseimage build-lamp
 
 rebuild:
 	(make TARGET=rebuild all)

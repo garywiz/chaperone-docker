@@ -29,7 +29,7 @@ if [ $# == 1 ]; then
    IMAGE=$DEFAULT_IMAGE
 elif [ $# != 2 ]; then
    echo ""
-   echo "Usage: runlocal [-d] local-apps-dir [image-name]"
+   echo "Usage: chaplocal [-d] local-apps-dir [image-name]"
    echo ""
    echo "Runs the specified chaperone image and uses local-apps-dir for the apps"
    echo "directory.  Creates a script in local-apps-dir called run.sh so you can"
@@ -74,13 +74,49 @@ fi
 
 function initapps() {
 
+mkdir -p $APPSDIR/build $APPSDIR/build/setup
+
+cat >$APPSDIR/build/Dockerfile <<EOF
+FROM $IMAGE
+ADD . /setup/
+RUN /setup/build/install.sh
+EOF
+
+cat >$APPSDIR/build/install.sh <<'QEOF'
+cd /setup
+# copy everything from setup to the root /apps
+tar cvf - --exclude 'build*' --exclude 'run.sh' . | (cd /apps; tar xf -)
+# Add additional setup commands for your production image here, if any.
+rm -rf /setup
+QEOF
+chmod ugo+x $APPSDIR/build/install.sh
+
 cat >$APPSDIR/bash.bashrc <<EOF
 export PROMPT_DIRTRIM=2
 # Created by chaplocal
 cd $APPSDIR
 echo ""
 echo "Now running inside container. Directory is: $APPSDIR"
+echo ""
 EOF
+
+cat >$APPSDIR/build.sh <<'QEOF'
+#!/bin/bash
+#Created by chaplocal on `date`
+# the cd trick assures this works even if the current directory is not current.
+cd ${0%/*}
+if [ $# != 1 ]; then
+  echo "Usage: ./build.sh <production-image-name>"
+  exit 1
+fi
+prodimage="$1"
+if [ ! -f build/Dockerfile ]; then
+  echo "Expecting to find Dockerfile in ./build ... not found!"
+  exit 1
+fi
+tar czh --exclude 'var/*' . | docker build -t $prodimage -f build/Dockerfile -
+QEOF
+chmod ugo+x $APPSDIR/build.sh
 
 cat >$APPSDIR/run.sh <<EOF
 #!/bin/bash
@@ -108,7 +144,7 @@ fi
 # Create a user '$USER' with uid=$myuid inside the container so the mountpoint permissions
 # are correct.
 
-docker run \$options -v /home:/home $IMAGE \\
+docker run \$options -v /home:/home -p 8080:8080 $IMAGE \\
    --create $USER/$myuid --config \$APPS/chaperone.d \$* \$shellopt
 EOF
 chmod ugo+x $APPSDIR/run.sh
@@ -126,11 +162,12 @@ if [ ! -d $APPSDIR ]; then
     echo "then use it as a template for your production image."
     echo ""
     if [ -x $APPSDIR/bin/chaplocal ]; then
-       THIERVER=`$APPSDIR/bin/chaplocal -V`
-       if [ $THEIRVER != $VERSTR ]; then
+       THEIRVER=`$APPSDIR/bin/chaplocal -V`
+       if [ "$THEIRVER" != "$VERSTR" ]; then
 	   echo "WARNING: This image uses a different version of chaplocal."
 	   echo "         Ours:   $VERSTR"
 	   echo "         Image:  $THEIRVER"
+	   echo ""
        fi
     fi
     echo Executing run.sh within $APPSDIR ...
