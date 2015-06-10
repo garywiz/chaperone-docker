@@ -84,6 +84,8 @@ EOF
 
 cat >$APPSDIR/build/install.sh <<'QEOF'
 cd /setup
+# remove existing chaperone.d and init.d from /apps so none linger
+rm -rf /apps/chaperone.d /apps/init.d
 # copy everything from setup to the root /apps
 tar cvf - --exclude 'build*' --exclude 'run.sh' . | (cd /apps; tar xf -)
 # Add additional setup commands for your production image here, if any.
@@ -114,7 +116,7 @@ if [ ! -f build/Dockerfile ]; then
   echo "Expecting to find Dockerfile in ./build ... not found!"
   exit 1
 fi
-tar czh --exclude 'var/*' . | docker build -t $prodimage -f build/Dockerfile -
+tar czh --exclude '*~' --exclude 'var/*' . | docker build -t $prodimage -f build/Dockerfile -
 QEOF
 chmod ugo+x $APPSDIR/build.sh
 
