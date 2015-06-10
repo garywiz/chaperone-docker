@@ -1,4 +1,4 @@
-FROM garywiz/chaperone-baseimage:latest
+FROM chapdev/chaperone-baseimage:latest
 MAINTAINER Gary Wisniewski <garyw@blueseastech.com>
 
 ADD setup/ /setup/

@@ -1,7 +1,7 @@
 include ../include/make.inc
 
-NAME = garywiz/chaperone-baseimage
-VERSION = 0.1.5.0		# C.C.C.X where C.C.C is chaperone version used in this release
+NAME = $(IMAGE_NAMESPACE)/chaperone-baseimage
+VERSION = $(IMAGE_VERSION)
 
 .PHONY: all build binaries
 

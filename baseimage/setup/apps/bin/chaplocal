@@ -2,6 +2,21 @@
 # Little script to run a chaperone docker container in the local directory
 # for development or other purposes.
 
+DEFAULT_IMAGE="chapdev/chaperone-baseimage"
+VERSTR="chaplocal version 1.0"
+
+if [ "$CHAP_SERVICE_NAME" != "" ]; then
+   echo "The 'chaplocal' script is not intended to be run inside a container,"
+   echo "but for use on the docker host to set up local development directories."
+   echo "Maybe you meant 'get-chaplocal'?"
+   exit 1
+fi
+
+if [ "$1" == '-V' ]; then
+   echo $VERSTR
+   exit
+fi
+
 if [ "$1" == '-d' ]; then
    runopts="-d"
    shift
@@ -9,9 +24,12 @@ else
    runopts=""
 fi
 
-if [ $# != 2 ]; then
+IMAGE="$2"
+if [ $# == 1 ]; then
+   IMAGE=$DEFAULT_IMAGE
+elif [ $# != 2 ]; then
    echo ""
-   echo "Usage: runlocal [-d] image-name local-apps-dir"
+   echo "Usage: runlocal [-d] local-apps-dir [image-name]"
    echo ""
    echo "Runs the specified chaperone image and uses local-apps-dir for the apps"
    echo "directory.  Creates a script in local-apps-dir called run.sh so you can"
@@ -20,11 +38,12 @@ if [ $# != 2 ]; then
    echo "Will run all container processes under the current user account with the"
    echo "local drive mounted as a shared volume in the container."
    echo ""
+   echo "If not specified, the the image '$DEFAULT_IMAGE' will be used."
+   echo ""
    exit
 fi
 
-IMAGE="$1"
-APPSBASE="$2"
+APPSBASE="$1"
 LOCALROOT=$PWD
 
 APPSDIR=$LOCALROOT/$APPSBASE
@@ -106,6 +125,14 @@ if [ ! -d $APPSDIR ]; then
     echo "You can customize the contents of $APPSDIR to tailor it for your application,"
     echo "then use it as a template for your production image."
     echo ""
+    if [ -x $APPSDIR/bin/chaplocal ]; then
+       THIERVER=`$APPSDIR/bin/chaplocal -V`
+       if [ $THEIRVER != $VERSTR ]; then
+	   echo "WARNING: This image uses a different version of chaplocal."
+	   echo "         Ours:   $VERSTR"
+	   echo "         Image:  $THEIRVER"
+       fi
+    fi
     echo Executing run.sh within $APPSDIR ...
     echo ""
 elif [ ! -f $APPSDIR/run.sh ]; then

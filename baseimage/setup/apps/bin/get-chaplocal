@@ -1,0 +1,32 @@
+#!/bin/bash
+
+#################################################################################
+# YOU SHOULD NOT BE SEEING THIS!!  IF SO, YOU ARE NOT PIPING INTO sh!
+#
+# Make sure you pipe the output of your docker command into sh, like this...
+#
+#   docker run -i chapdev/chaperone-baseimage --command get-chaplocal | sh
+#                                                                     ^^^^
+#################################################################################
+
+if [ "$CHAP_SERVICE_NAME" != "" ]; then
+  stty -onlcr			# inhibits carriage return if -t was specified
+fi
+
+if [ "$CHAP_COMMAND_MODE" != "1" ]; then
+  echo "get-chaplocal' should only be run in chaperone --command mode from a container"
+  exit 1
+fi
+
+script_text=`cat $APPS_DIR/bin/chaplocal`
+
+cat <<EOF
+if [ -f chaplocal ]; then
+  echo "'chaplocal' script already exists in this directory. Won't overwrite."
+  exit 1
+fi
+cat >chaplocal <<'-QEOF-'
+$script_text
+-QEOF-
+chmod ugo+x chaplocal
+EOF
