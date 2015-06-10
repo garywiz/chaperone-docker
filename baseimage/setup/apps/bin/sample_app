@@ -1,0 +1,40 @@
+#!/bin/bash
+# A sample app which displays relevant information on the screen, just so new users
+# know what's going on
+
+echo ""
+echo "********************"
+echo "NOTE: This is output from $APPS_DIR/sample_app, just so you know things are working."
+echo ""
+echo "You can disable this application, or replace it with your own by examining"
+echo "the $APPS_DIR/chaperone.d/200-userapp.conf configuration file."
+echo ""
+
+if [ "$USER" != '' ]; then
+echo "Your container is running as user '$USER'.  This most likely means that your"
+echo "application directory is shared with your host for easy development."
+else
+echo "Your container is running as 'root'.  This looks like a production environment"
+echo "and all configuration is stored within the container's filesystem".
+fi
+
+# See if there is a console app running...
+CONSOLE_STATUS=`telchap status | awk '/CONSOLE/{print $4}'`
+
+if [ "$CONSOLE_STATUS" != 'starting' ]; then
+  echo ""
+  if [ "$INTERACTIVE" == '1']; then
+    echo "You're running interactively, but there is no console application.  Perhaps"
+    echo "you should add /bin/bash to the 'docker run' command line?"
+    echo ""
+    echo "Because there is no foreground application, the system may appear to hang,"
+    echo "but it's running.  You can type Ctrl-C to stop it."
+  else
+    echo "There is no foreground application.  Ctrl-C will stop the system, or you"
+    echo "can get in using 'docker exec container-name /bin/bash"
+  fi
+fi
+
+echo ""
+echo "********************"
+
