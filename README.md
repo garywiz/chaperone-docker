@@ -35,7 +35,7 @@ for production.  *Please* [submit issues](https://github.com/garywiz/chaperone-d
 To get a quick idea of how things work, try the LAMP image and create your own userspace development directory.
 First, get the `chaplocal` script, a quick script which allows you to create userspace development "home directories":
 
-    docker run -i chapdev/chaperone-lamp --task get-chaplocal | sh
+    docker run -i --rm=true chapdev/chaperone-lamp --task get-chaplocal | sh
 
 You now have a script in your current directory called ``chaplocal``.
 Use it to create a new LAMP development directory:
