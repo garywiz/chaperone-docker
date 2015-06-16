@@ -4,7 +4,8 @@
 
 echo ""
 echo "********************"
-echo "NOTE: This is output from $APPS_DIR/sample_app, just so you know things are working."
+echo "NOTE: This is output from $APPS_DIR/sample_app"
+echo "      (A user application sample.)"
 echo ""
 echo "You can disable this application, or replace it with your own by examining"
 echo "the $APPS_DIR/chaperone.d/200-userapp.conf configuration file."

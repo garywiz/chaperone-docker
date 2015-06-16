@@ -11,7 +11,7 @@ function do_apt_install() {
 }
 
 # Use a proxy if we have one set up
-/setup/apt_setproxy on
+/setup-baseimage/apt_setproxy on
 
 ## Temporarily disable dpkg fsync to make building faster.
 if [[ ! -e /etc/dpkg/dpkg.cfg.d/docker-apt-speedup ]]; then
@@ -58,7 +58,7 @@ update-locale LANG=en_US.UTF-8 LC_CTYPE=en_US.UTF-8
 do_apt_install nano curl less vim psmisc
 
 # Install prebuilt binaries
-(cd /; tar xzf /setup/lib/setproctitle-install.tar.gz)
+(cd /; tar xzf /setup-baseimage/lib/setproctitle-install.tar.gz)
 
 # Install pip and chaperone
 do_apt_install python3-pip
@@ -74,7 +74,7 @@ chmod 775 log
 chown root.syslog log
 
 # Customize some system files
-cp /setup/dot.bashrc /root/.bashrc
+cp /setup-baseimage/dot.bashrc /root/.bashrc
 
 # Allow unfettered root access by users. This is done so that apps/init.d scripts can
 # have unfettered access to root on their first startup to configure userspace files
@@ -84,15 +84,17 @@ passwd -d root
 sed -i 's/nullok_secure/nullok/' /etc/pam.d/common-auth
 
 # Create default /apps directory
-cp -a /setup/apps /
+cp -a /setup-baseimage/apps /
 
 # Clean up apt
 apt-get clean
-/setup/apt_setproxy off
+/setup-baseimage/apt_setproxy off
 rm -rf /var/lib/apt/lists/*
 rm -f /etc/dpkg/dpkg.cfg.d/02apt-speedup
 
 # Do other cleanups
-rm -rf /setup
+rm -rf /setup-baseimage
 rm -rf /tmp/* /var/tmp/*
 rm -f `find /apps -name '*~'`
+
+echo done.

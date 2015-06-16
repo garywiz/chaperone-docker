@@ -12,13 +12,13 @@ function do_apt_install() {
 }
 
 # Use a proxy if we have one set up
-/setup/apt_setproxy on
+/setup-lamp/apt_setproxy on
 
 # update indices
 apt-get update
 
 # Copy new apps files into /apps
-cp -av /setup/apps/* /apps
+cp -av /setup-lamp/apps/* /apps
 
 # Normal install steps
 do_apt_install apache2
@@ -47,11 +47,12 @@ do_apt_install php-pear
 
 # Clean up apt
 apt-get clean
-/setup/apt_setproxy off
+/setup-lamp/apt_setproxy off
 rm -rf /var/lib/apt/lists/*
 rm -f /etc/dpkg/dpkg.cfg.d/02apt-speedup
 
 # Do other cleanups
-rm -rf /setup
+rm -r /setup-lamp
 rm -rf /tmp/* /var/tmp/*
 rm -f `find /apps -name '*~'`
+echo done.

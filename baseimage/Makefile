@@ -1,7 +1,6 @@
 include ../include/make.inc
 
-NAME = $(IMAGE_NAMESPACE)/chaperone-baseimage
-VERSION = $(IMAGE_VERSION)
+IMAGE_NAME = chaperone-baseimage
 
 .PHONY: all build binaries
 
@@ -17,3 +16,7 @@ binaries: setup/lib/setproctitle-install.tar.gz
 
 setup/lib/setproctitle-install.tar.gz:
 	./setup/create-binaries.sh	
+
+clean:
+	rm -rf ./setup/lib
+	rm -rf `find . -name '*~'`

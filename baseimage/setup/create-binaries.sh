@@ -33,6 +33,6 @@ mkdir /setup/lib
 echo Copy them to our shared mount bin...
 cd dist
 cp -v setproctitle-*.gz /setup/lib/setproctitle-install.tar.gz
-chown -R --reference /setup/create-binaries.sh /setup/bin
+chown -R --reference /setup/create-binaries.sh /setup/lib
 
 EOF

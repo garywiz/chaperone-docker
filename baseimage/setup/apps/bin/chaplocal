@@ -74,7 +74,7 @@ fi
 
 function initapps() {
 
-mkdir -p $APPSDIR/build $APPSDIR/build/setup
+mkdir -p $APPSDIR/build
 
 cat >$APPSDIR/build/Dockerfile <<EOF
 FROM $IMAGE
@@ -124,30 +124,54 @@ cat >$APPSDIR/run.sh <<EOF
 #!/bin/bash
 #Created by chaplocal on `date`
 
+usage() {
+  echo "Usage: run.sh [-d] [-p port#] [-h] [extra-chaperone-options]"
+  echo "       Run $IMAGE as a daemon or interactively (the default)."
+  echo "       Apache will listen on port specified (or 8080 if available)."
+  exit
+}
+
 cd \${0%/*} # go to directory of this file
 APPS=\$PWD
 cd ..
 
 options="-t -i -e TERM=\$TERM --rm=true"
 shellopt="/bin/bash --rcfile \$APPS/bash.bashrc"
-if [ "\$1" == '-d' ]; then
-  shift
-  options="-d"
-  shellopt=""
-fi
 
-if [ "\$1" == "-h" ]; then
-  echo "Usage: run.sh [-d] [-h] [extra-chaperone-options]"
-  echo "       Run $IMAGE as a daemon or interactively (the default)."
-  exit
+while getopts ":-dp:" o; do
+  case "\$o" in
+    d)
+      options="-d"
+      shellopt=""
+      ;;
+    p)
+      portopt="-p \$OPTARG:8080"
+      ;;      
+    -) # first long option terminates
+      break
+      ;;
+    *)
+      usage
+      ;;
+  esac
+done
+shift \$((OPTIND-1))
+
+# Extract our local UID/GID
+myuid=\`id -u\`
+mygid=\`id -g\`
+
+if [ "\$portopt" == "" -a -x /bin/nc ] && ! /bin/nc -z localhost 8080; then
+  portopt="-p 8080:8080"
+  echo "Web server defaults to port localhost:8080 ..."
 fi
 
 # Run the image with this directory as our local apps dir.
-# Create a user '$USER' with uid=$myuid inside the container so the mountpoint permissions
+# Create a user with uid=\$myuid inside the container so the mountpoint permissions
 # are correct.
 
-docker run \$options -v /home:/home -p 8080:8080 $IMAGE \\
-   --create $USER/$myuid --config \$APPS/chaperone.d \$* \$shellopt
+docker run \$options -v /home:/home \$portopt $IMAGE \\
+   --create \$USER/\$myuid --config \$APPS/chaperone.d \$* \$shellopt
 EOF
 chmod ugo+x $APPSDIR/run.sh
 }

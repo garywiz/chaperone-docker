@@ -10,3 +10,8 @@ build-baseimage:
 
 build-lamp: build-baseimage
 	(cd lamp; make $(TARGET))
+
+clean:
+	(cd baseimage; make clean)
+	(cd lamp; make clean)
+	rm -rf `find . -name '*~'`

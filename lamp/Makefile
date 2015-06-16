@@ -1,7 +1,6 @@
 include ../include/make.inc
 
-NAME = $(IMAGE_NAMESPACE)/chaperone-lamp
-VERSION = $(IMAGE_VERSION)
+IMAGE_NAME = chaperone-lamp
 
 .PHONY: all build binaries
 
@@ -12,3 +11,6 @@ build:
 
 rebuild:
 	$(DOCKER_REBUILD)
+
+clean:
+	rm -rf `find . -name '*~'`
