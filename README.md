@@ -1,7 +1,7 @@
 # Ubuntu Docker images which use the Chaperone process manager
 
 This repository is used to build two base-iamges which use the
-[Chaperone](http://garywiz.github.io/chaperone/) lightweight process manager.
+[Chaperone](http://garywiz.github.io/chaperone/guide/chap-intro.html) lightweight process manager.
 
 Two images are included:
 
