@@ -1,6 +1,6 @@
 # Ubuntu Docker images which use the Chaperone process manager
 
-This repository is used to build two base-iamges which use th
+This repository is used to build two base-iamges which use the
 [Chaperone](http://garywiz.github.io/chaperone/) lightweight process manager.
 
 Two images are included:
@@ -11,13 +11,18 @@ Two images are included:
    [Docker Hub as chaperone-lamp](https://registry.hub.docker.com/u/chapdev/chaperone-lamp).
    
 Chaperone is a lightweight process manager specifically designed as an ENTRYPOINT for Docker containers that runs as PID 1.  As a single
-process, it provides:
+controlling process, it provides:
 
   * Dependency based [parallel start-up of services](http://garywiz.github.io/chaperone/ref/config-service.html).
   * [Built in syslog implementation](http://garywiz.github.io/chaperone/ref/config-logging.html), which listens on /dev/log and allows
     flexible redirection of all log output to docker stdout, or simultaneously
     to log files.
+  * Support for ``systemd`` NOTIFY process types with in-container emulation of notify sockets to
+	better manage process life-cycles.
   * PID cleanup, environment variable control, docker-friendly command line options, many many more features.
+
+Chaperone's philosphy is to simplify management of multi-process containers and consolidate everything a container needs
+in a single, compact process.
 
 The [Reference Documentation for Chaperone](http://garywiz.github.io/chaperone/ref/index.html) is complete, and
 more examples and Docker usage information is on the way.
