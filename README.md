@@ -1,4 +1,4 @@
-# A Ubuntu base images for Docker which use the Chaperone process manager
+# Ubuntu Docker images which use the Chaperone process manager
 
 This repository is used to build two base-iamges which use th
 [Chaperone](http://garywiz.github.io/chaperone/) lightweight process manager.
@@ -17,9 +17,13 @@ process, it provides:
   * [Built in syslog implementation](http://garywiz.github.io/chaperone/ref/config-logging.html), which listens on /dev/log and allows
     flexible redirection of all log output to docker stdout, or simultaneously
     to log files.
+  * PID cleanup, environment variable control, docker-friendly command line options, many many more features.
+
+The [Reference Documentation for Chaperone](http://garywiz.github.io/chaperone/ref/index.html) is complete, and
+more examples and Docker usage information is on the way.
 
 Chaperone is newly developed, so keep in mind that this is currently in Beta and we would not recommend these images
-for production.
+for production.  *Please* [submit issues](https://github.com/garywiz/chaperone-docker/issues) if you have any problems or suggestions!
 
 ## Try it out
 
@@ -28,7 +32,8 @@ First, get the `chaplocal` script, a quick script which allows you to create use
 
     docker run -i chapdev/chaperone-lamp --task get-chaplocal | sh
 
-Then, once you have chaplocal, try creating a new LAMP development directory:
+You now have a script in your current directory called ``chaplocal``.
+Use it to create a new LAMP development directory:
 
     ./chaplocal test-app
 
