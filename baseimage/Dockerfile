@@ -1,5 +1,5 @@
 FROM ubuntu:14.04
-MAINTAINER Gary Wisniewski <garyw@blueseastech.com>
+#MAINTAINER Gary Wisniewski <garyw@blueseastech.com>
 
 ADD setup/ /setup-baseimage/
 RUN /setup-baseimage/install.sh
@@ -12,5 +12,4 @@ RUN /setup-baseimage/install.sh
 #		  The _ prefix keeps these from polluting our environment.
 
 ENV _CHAP_OPTIONS="--config apps/chaperone.d" _PARENT_IMAGE="chapdev/chaperone-baseimage"
-
 ENTRYPOINT ["/usr/local/bin/chaperone"]

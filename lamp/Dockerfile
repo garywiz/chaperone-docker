@@ -1,5 +1,5 @@
 FROM chapdev/chaperone-baseimage:latest
-MAINTAINER Gary Wisniewski <garyw@blueseastech.com>
+#MAINTAINER Gary Wisniewski <garyw@blueseastech.com>
 
 ADD setup/ /setup-lamp/
 RUN /setup-lamp/install.sh
