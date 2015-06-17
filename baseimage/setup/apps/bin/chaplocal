@@ -93,14 +93,14 @@ rm -rf /setup
 QEOF
 chmod ugo+x $APPSDIR/build/install.sh
 
-cat >$APPSDIR/bash.bashrc <<EOF
+cat >$APPSDIR/bash.bashrc <<'QEOF'
 export PROMPT_DIRTRIM=2
 # Created by chaplocal
-cd $APPSDIR
+cd $APPS_DIR
 echo ""
-echo "Now running inside container. Directory is: $APPSDIR"
+echo "Now running inside container. Directory is: $APPS_DIR"
 echo ""
-EOF
+QEOF
 
 cat >$APPSDIR/build.sh <<'QEOF'
 #!/bin/bash
@@ -124,10 +124,12 @@ cat >$APPSDIR/run.sh <<EOF
 #!/bin/bash
 #Created by chaplocal on `date`
 
+IMAGE="$IMAGE"
+
 usage() {
   echo "Usage: run.sh [-d] [-p port#] [-h] [extra-chaperone-options]"
   echo "       Run $IMAGE as a daemon or interactively (the default)."
-  echo "       Apache will listen on port specified (or 8080 if available)."
+  echo "       First available port will be remapped to localhost if possible."
   exit
 }
 
@@ -145,7 +147,7 @@ while getopts ":-dp:" o; do
       shellopt=""
       ;;
     p)
-      portopt="-p \$OPTARG:8080"
+      portopt="-p \$OPTARG"
       ;;      
     -) # first long option terminates
       break
@@ -161,9 +163,12 @@ shift \$((OPTIND-1))
 myuid=\`id -u\`
 mygid=\`id -g\`
 
-if [ "\$portopt" == "" -a -x /bin/nc ] && ! /bin/nc -z localhost 8080; then
-  portopt="-p 8080:8080"
-  echo "Web server defaults to port localhost:8080 ..."
+if [ "\$portopt" == "" ]; then
+  exposed=\`docker inspect \$IMAGE | sed -ne 's/^ *"\\([0-9]*\\)\\/tcp".*$/\\1/p' - | head -1\`
+  if [ "\$exposed" != "" -a -x /bin/nc ] && ! /bin/nc -z localhost \$exposed; then
+    portopt="-p \$exposed:\$exposed"
+    echo "Port \$exposed available at localhost:\$exposed ..."
+  fi
 fi
 
 # Run the image with this directory as our local apps dir.

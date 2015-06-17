@@ -20,8 +20,12 @@ apt-get update
 # Copy new apps files into /apps
 cp -av /setup-lamp/apps/* /apps
 
+# Remove sample application from chaperone.d
+rm /apps/chaperone.d/200-userapp.conf
+rm /apps/bin/sample_app
+
 # Normal install steps
-do_apt_install apache2
+do_apt_install apache2 apache2-utils
 
 debconf-set-selections <<< "debconf debconf/frontend select Noninteractive"
 
