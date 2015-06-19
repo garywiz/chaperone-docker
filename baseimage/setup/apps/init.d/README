@@ -1,4 +1,4 @@
-Files in this directory are executed upon container startup by the ../etc/init.sh script.
+Files in this directory are executed upon container startup by the ../etc/startup.sh script.
 
 There are two modes:
 

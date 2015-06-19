@@ -3,7 +3,7 @@
 # for development or other purposes.
 
 DEFAULT_IMAGE="chapdev/chaperone-baseimage"
-VERSTR="chaplocal version 1.0"
+VERSTR="chaplocal version 1.1"
 
 if [ "$CHAP_SERVICE_NAME" != "" ]; then
    echo "The 'chaplocal' script is not intended to be run inside a container,"
@@ -84,8 +84,8 @@ EOF
 
 cat >$APPSDIR/build/install.sh <<'QEOF'
 cd /setup
-# remove existing chaperone.d and init.d from /apps so none linger
-rm -rf /apps/chaperone.d /apps/init.d
+# remove existing chaperone.d and startup.d from /apps so none linger
+rm -rf /apps/chaperone.d /apps/startup.d
 # copy everything from setup to the root /apps
 tar cvf - --exclude 'build*' --exclude 'run.sh' . | (cd /apps; tar xf -)
 # Add additional setup commands for your production image here, if any.

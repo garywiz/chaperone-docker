@@ -1,5 +1,7 @@
 #!/bin/bash
-# A quick script to initialize the system
+# A quick script to initialize the system.  This is not equivalent
+# to the classic /etc/init.d type initailization, but more of a preparation
+# phase so that services have what they need to run.
 
 # We publish two variables for use in startup scripts:
 #
@@ -9,32 +11,32 @@
 # Both may be relevant, since it's possible that the $APPS_DIR may be on a mount point
 # so it can be reused when starting up containers which refer to it.
 
-function dolog() { logger -t init.sh -p info $*; }
+function dolog() { logger -t startup.sh -p info $*; }
 
-apps_init_file="$APPS_DIR/var/run/apps_init.done"
-cont_init_file="/container_init.done"
+apps_startup_file="$APPS_DIR/var/run/apps_startup.done"
+cont_startup_file="/container_startup.done"
 
 export CONTAINER_INIT=0
 export APPS_INIT=0
 
-if [ ! -f $cont_init_file ]; then
+if [ ! -f $cont_startup_file ]; then
     dolog "initializing container for the first time"
     CONTAINER_INIT=1
-    su -c "date >$cont_init_file"
+    su -c "date >$cont_startup_file"
 fi
 
-if [ ! -f $apps_init_file ]; then
+if [ ! -f $apps_startup_file ]; then
     dolog "initializing $APPS_DIR for the first time"
     APPS_INIT=1
     mkdir -p $APPS_DIR/var/run $APPS_DIR/var/log
     chmod 777 $APPS_DIR/var/run $APPS_DIR/var/log
-    date >$apps_init_file
+    date >$apps_startup_file
 fi
 
-if [ -d $APPS_DIR/init.d ]; then
-  for initf in $( find $APPS_DIR/init.d -type f -executable \! -name '*~' ); do
-    dolog "running $initf..."
-    $initf
+if [ -d $APPS_DIR/startup.d ]; then
+  for sf in $( find $APPS_DIR/startup.d -type f -executable \! -name '*~' ); do
+    dolog "running $sf..."
+    $sf
   done
 fi
 

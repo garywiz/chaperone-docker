@@ -55,7 +55,7 @@ locale-gen en_US
 update-locale LANG=en_US.UTF-8 LC_CTYPE=en_US.UTF-8
 
 # Miscellaneous useful utilities
-do_apt_install nano curl less vim psmisc
+do_apt_install nano curl less vim psmisc gettext
 
 # Install prebuilt binaries
 (cd /; tar xzf /setup-baseimage/lib/setproctitle-install.tar.gz)
@@ -76,7 +76,7 @@ chown root.syslog log
 # Customize some system files
 cp /setup-baseimage/dot.bashrc /root/.bashrc
 
-# Allow unfettered root access by users. This is done so that apps/init.d scripts can
+# Allow unfettered root access by users. This is done so that apps/startup.d scripts can
 # have unfettered access to root on their first startup to configure userspace files
 # if needed (see mysql in chaperone-lamp for an example).  At the end of the first startup
 # this is then locked down by apps/etc/init.sh.
