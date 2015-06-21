@@ -8,7 +8,7 @@ error_log syslog:server=unix:/dev/log;
 worker_processes 4;
 working_directory ${APPS_DIR};
 
-pid ${APPS_DIR}/var/run/nginx.pid;
+pid ${NGINX_PID_FILE};
 
 events {
 	worker_connections 768;
