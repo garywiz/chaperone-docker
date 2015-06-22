@@ -27,6 +27,7 @@ rm /apps/chaperone.d/200-userapp.conf
 rm /apps/bin/sample_app
 
 # Normal install steps
+do_apt_install php5-fpm
 do_apt_install nginx
 
 debconf-set-selections <<< "debconf debconf/frontend select Noninteractive"

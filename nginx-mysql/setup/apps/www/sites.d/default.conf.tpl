@@ -67,6 +67,6 @@ server {
 	        fastcgi_param  SERVER_PORT        $server_port;
 	        fastcgi_param  SERVER_NAME        $server_name;
  
-	        fastcgi_pass 127.0.0.1:9000;
+	        fastcgi_pass unix:${PHPFFM_SOCKET};
 	}
 }
