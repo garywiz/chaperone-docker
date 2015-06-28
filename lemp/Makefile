@@ -1,6 +1,6 @@
 include ../include/make.inc
 
-IMAGE_NAME = chaperone-nginx-mysql
+IMAGE_NAME = chaperone-lemp
 
 .PHONY: all build binaries
 
