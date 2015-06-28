@@ -83,41 +83,68 @@ RUN /setup/build/install.sh
 EOF
 
 cat >$APPSDIR/build/install.sh <<'QEOF'
+#!/bin/bash
+
 cd /setup
+
 # remove existing chaperone.d and startup.d from /apps so none linger
 rm -rf /apps/chaperone.d /apps/startup.d
+
 # copy everything from setup to the root /apps
 tar cvf - --exclude 'build*' --exclude 'run.sh' . | (cd /apps; tar xf -)
-# Add additional setup commands for your production image here, if any.
+
+# If there is an 00-install.sh executable script available in startup.d, then incorporate
+# it into our image build and comment them out so the next build documents, but does not
+# include them.
+
+if [ -x startup.d/00-install.sh ]; then
+  # Execute these
+  ./startup.d/00-install.sh BUILD
+  # Comment them out so the install file can be incrementally used again.
+  sed -r '/AFTER THIS LINE/,$ s/^[ \t]*[^# \t].*/#\0/' startup.d/00-install.sh >/apps/startup.d/00-install.sh
+fi
+
+# Add additional setup commands for your production image here, if any.  However, the best
+# way is to put things in 00-install.sh.
+# ...
+
 rm -rf /setup
 QEOF
 chmod ugo+x $APPSDIR/build/install.sh
 
 cat >$APPSDIR/bash.bashrc <<'QEOF'
+# Bash start-up file, created by chaplocal
+
 export PROMPT_DIRTRIM=2
-# Created by chaplocal
 cd $APPS_DIR
+
 echo ""
 echo "Now running inside container. Directory is: $APPS_DIR"
 echo ""
+
+if [ "$EXTERN_HOSTPORT" != "" -a "$HTTPD_SERVER_NAME" != "" ]; then
+  echo "The default '$HTTPD_SERVER_NAME' site is running at http://$EXTERN_HOSTPORT/"
+  echo ""
+fi
+
 QEOF
 
-cat >$APPSDIR/build.sh <<'QEOF'
+cat >$APPSDIR/build.sh <<EOF
 #!/bin/bash
 #Created by chaplocal on `date`
 # the cd trick assures this works even if the current directory is not current.
-cd ${0%/*}
-if [ $# != 1 ]; then
+cd \${0%/*}
+if [ \$# != 1 ]; then
   echo "Usage: ./build.sh <production-image-name>"
   exit 1
 fi
-prodimage="$1"
+prodimage="\$1"
 if [ ! -f build/Dockerfile ]; then
   echo "Expecting to find Dockerfile in ./build ... not found!"
   exit 1
 fi
-tar czh --exclude '*~' --exclude 'var/*' . | docker build -t $prodimage -f build/Dockerfile -
-QEOF
+tar czh --exclude '*~' --exclude 'var/*' . | docker build -t \$prodimage -f build/Dockerfile -
+EOF
 chmod ugo+x $APPSDIR/build.sh
 
 cat >$APPSDIR/run.sh <<EOF
@@ -125,11 +152,12 @@ cat >$APPSDIR/run.sh <<EOF
 #Created by chaplocal on `date`
 
 IMAGE="$IMAGE"
+DOCKERHOST=\`hostname\`
 
 usage() {
   echo "Usage: run.sh [-d] [-p port#] [-h] [extra-chaperone-options]"
   echo "       Run $IMAGE as a daemon or interactively (the default)."
-  echo "       First available port will be remapped to localhost if possible."
+  echo "       First available port will be remapped to \$DOCKERHOST if possible."
   exit
 }
 
@@ -165,9 +193,9 @@ mygid=\`id -g\`
 
 if [ "\$portopt" == "" ]; then
   exposed=\`docker inspect \$IMAGE | sed -ne 's/^ *"\\([0-9]*\\)\\/tcp".*$/\\1/p' - | head -1\`
-  if [ "\$exposed" != "" -a -x /bin/nc ] && ! /bin/nc -z localhost \$exposed; then
-    portopt="-p \$exposed:\$exposed"
-    echo "Port \$exposed available at localhost:\$exposed ..."
+  if [ "\$exposed" != "" -a -x /bin/nc ] && ! /bin/nc -z \$DOCKERHOST \$exposed; then
+    portopt="-p \$exposed:\$exposed --env EXTERN_HOSTPORT=\$DOCKERHOST:\$exposed"
+    echo "Port \$exposed available at \$DOCKERHOST:\$exposed ..."
   fi
 fi
 
