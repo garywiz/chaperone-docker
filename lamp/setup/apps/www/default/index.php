@@ -121,7 +121,7 @@ function highlight($instr, $words) {
 	      </div>
 	      <pre class="premain">$ cd <?php echo $appsdir; ?><br/><?php 
 		    echo highlight(shell_exec("cd " . $appsdir . "; ls -l"),
-			 'etc|chaperone.d|startup.d|var|www'); ?></pre>
+			 'etc|chaperone.d|startup.d|var|www|build.sh'); ?></pre>
 	      <br/>
 	      A few things to know:<br />
 
@@ -162,6 +162,23 @@ function highlight($instr, $words) {
 		    and copying files if needed.  For example, one of the scripts in
 		    this directory creates and initializes the MySQL database directory
 		    in <tt><?php echo $appsdir; ?>/var/mysql</tt>.  
+		    <p>
+		    If you want to install additional features when the container starts
+		    (and when you build a derivative image), then see <tt>00-install.sh</tt>.
+		  </div>
+		</div>
+	      </div>
+
+	      <div class="paragraph" style="text-align:left;">
+		<div class="dirlist">
+		  <div class="dirlist-name">build.sh</div>
+		  <div class="dirlist-item">
+		    This script will build a derivative of the current environment
+		    and package it inside a new Docker image.  You can then use the new image
+		    as the basis for further development.  It also packages the
+		    contents <?php echo $appsdirtt; ?> and moves it to <tt>/apps</tt>
+		    inside the container so that the container can operate as
+		    a self-contained production image.
 		  </div>
 		</div>
 	      </div>

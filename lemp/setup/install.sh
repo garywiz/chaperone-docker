@@ -12,15 +12,15 @@ function do_apt_install() {
 }
 
 # Use a proxy if we have one set up
-/setup-nginx-mysql/apt_setproxy on
+/setup-lemp/apt_setproxy on
 
 # add nginx repo, update indices
-apt-key add /setup-nginx-mysql/nginx_signing.key
+apt-key add /setup-lemp/nginx_signing.key
 add-apt-repository ppa:nginx/stable
 apt-get update
 
 # Copy new apps files into /apps
-cp -av /setup-nginx-mysql/apps/* /apps
+cp -av /setup-lemp/apps/* /apps
 
 # Remove sample application from chaperone.d
 rm /apps/chaperone.d/200-userapp.conf
@@ -54,12 +54,12 @@ do_apt_install php-pear
 
 # Clean up apt
 apt-get clean
-/setup-nginx-mysql/apt_setproxy off
+/setup-lemp/apt_setproxy off
 rm -rf /var/lib/apt/lists/*
 rm -f /etc/dpkg/dpkg.cfg.d/02apt-speedup
 
 # Do other cleanups
-rm -r /setup-nginx-mysql
+rm -r /setup-lemp
 rm -rf /tmp/* /var/tmp/*
 rm -f `find /apps -name '*~'`
 echo done.

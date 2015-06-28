@@ -61,7 +61,7 @@
 	  </div><!-- end container -->	
 	</div><!-- end top background -->
 
-	<div id="main-wrap">
+	<div id="main-wrap-alone">
 	  <div class="container">
 	  <iframe class="phpinfo-frame" src="do_phpinfo.php"></iframe>
 	  </div><!-- end container -->

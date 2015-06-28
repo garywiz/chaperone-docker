@@ -3,7 +3,7 @@
 # for development or other purposes.
 
 DEFAULT_IMAGE="chapdev/chaperone-baseimage"
-VERSTR="chaplocal version 1.1"
+VERSTR="chaplocal version 1.2"
 
 if [ "$CHAP_SERVICE_NAME" != "" ]; then
    echo "The 'chaplocal' script is not intended to be run inside a container,"
@@ -93,7 +93,8 @@ cd /setup
 rm -rf /apps/chaperone.d /apps/startup.d
 
 # copy everything from setup to the root /apps
-tar cvf - --exclude 'build*' --exclude 'run.sh' . | (cd /apps; tar xf -)
+echo copying application files to /apps ...
+tar cf - --exclude 'build*' --exclude 'run.sh' . | (cd /apps; tar xf -)
 
 # If there is an 00-install.sh executable script available in startup.d, then incorporate
 # it into our image build and comment them out so the next build documents, but does not
@@ -136,6 +137,10 @@ cat >$APPSDIR/build.sh <<EOF
 #Created by chaplocal on `date`
 # the cd trick assures this works even if the current directory is not current.
 cd \${0%/*}
+if [ "\$CHAP_SERVICE_NAME" == "" ]; then
+  echo You need to run build.sh on your docker host, not inside a container.
+  exit
+fi
 if [ \$# != 1 ]; then
   echo "Usage: ./build.sh <production-image-name>"
   exit 1
