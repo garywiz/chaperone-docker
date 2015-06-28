@@ -137,7 +137,7 @@ cat >$APPSDIR/build.sh <<EOF
 #Created by chaplocal on `date`
 # the cd trick assures this works even if the current directory is not current.
 cd \${0%/*}
-if [ "\$CHAP_SERVICE_NAME" == "" ]; then
+if [ "\$CHAP_SERVICE_NAME" != "" ]; then
   echo You need to run build.sh on your docker host, not inside a container.
   exit
 fi
