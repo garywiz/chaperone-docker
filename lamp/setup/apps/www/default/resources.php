@@ -90,7 +90,7 @@ function highlight($instr, $words) {
 		Plus, there are several ready-made images on Docker Hub so you can get started
 		right away:
 		<ul>
-		  <li><a href="https://registry.hub.docker.com/u/chapdev/chaperone-baseimage/">chaperone-baseimge</a>:
+		  <li><a href="https://registry.hub.docker.com/u/chapdev/chaperone-baseimage/">chaperone-baseimage</a>:
 		    A minimal base image which establishes a startup-framework for userspace and production
 		    development.  All other images are derivatives of this image.</li>
 		  <li><a href="https://registry.hub.docker.com/u/chapdev/chaperone-lamp/">chaperone-lamp</a>:
