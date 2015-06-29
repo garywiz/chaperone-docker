@@ -1,16 +1,7 @@
 <!DOCTYPE html>
-<?php
-   $appsdir = getenv("APPS_DIR");
-   $appsdirtt = "<tt>" . $appsdir . "</tt>";
-   $pagename = getenv("HTTPD_SERVER_NAME") . "+mysql container";
-
-function highlight($instr, $words) {
-   return preg_replace("/.+(".$words.")/", "<span class='ls-high'>$0</span>", $instr);
-}
-   ?>
 <html>
   <head>
-    <title><?php echo $pagename; ?> - Home</title>
+    <title><!--#echo var="PAGE_NAME" --> - Home</title>
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     
@@ -35,24 +26,24 @@ function highlight($instr, $words) {
 	      </div>
 	      <div id="logo"><span class="wsite-logo">
 		  <a href="">
-		    <span id="wsite-title"><?php echo $pagename; ?></span>
+		    <span id="wsite-title"><!--#echo var="PAGE_NAME" --></span>
 		  </a>
 		</span>
 		<div class="nav-spacer"></div>
 		<div class="nav-container">
 		  <ul class="wsite-menu-default">
 		    <li class="wsite-menu-item-wrap">
-		      <a href="index.php" class="wsite-menu-item">
+		      <a href="index.shtml" class="wsite-menu-item">
 			Default Site Home
 		      </a>
 		    </li>
 		    <li class="wsite-menu-item-wrap">
-		      <a href="about.php" class="wsite-menu-item">
+		      <a href="about.shtml" class="wsite-menu-item">
 			About Chaperone
 		      </a>
 		    </li>
 		    <li id="active" class="wsite-menu-item-wrap">
-		      <a href="resources.php" class="wsite-menu-item">
+		      <a href="resources.shtml" class="wsite-menu-item">
 			Resources
 		      </a>
 		    </li>
@@ -90,7 +81,7 @@ function highlight($instr, $words) {
 		Plus, there are several ready-made images on Docker Hub so you can get started
 		right away:
 		<ul>
-		  <li><a href="https://registry.hub.docker.com/u/chapdev/chaperone-baseimage/">chaperone-baseimage</a>:
+		  <li><a href="https://registry.hub.docker.com/u/chapdev/chaperone-baseimage/">chaperone-baseimge</a>:
 		    A minimal base image which establishes a startup-framework for userspace and production
 		    development.  All other images are derivatives of this image.</li>
 		  <li><a href="https://registry.hub.docker.com/u/chapdev/chaperone-lamp/">chaperone-lamp</a>:

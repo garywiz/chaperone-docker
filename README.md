@@ -9,8 +9,10 @@ Two images are included:
    [Docker Hub as chaperone-baseimage](https://registry.hub.docker.com/u/chapdev/chaperone-baseimage).
  * chaperone-lamp (A LAMP image managed by Chaperone.  On
    [Docker Hub as chaperone-lamp](https://registry.hub.docker.com/u/chapdev/chaperone-lamp).
- * chaperone-lamp (A LEMP image with Nginx instead of Apache, managed by Chaperone.  On
+ * chaperone-lemp (A LEMP image with Nginx instead of Apache, managed by Chaperone.  On
    [Docker Hub as chaperone-lemp](https://registry.hub.docker.com/u/chapdev/chaperone-lemp).
+ * chaperone-apache (An Apache-only image, managed by Chaperone.  On
+   [Docker Hub as chaperone-lemp](https://registry.hub.docker.com/u/chapdev/chaperone-apache).
    
 Chaperone is a lightweight process manager specifically designed as an ENTRYPOINT for Docker containers that runs as PID 1.  As a single
 controlling process, it provides:

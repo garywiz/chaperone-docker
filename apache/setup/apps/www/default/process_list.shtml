@@ -1,0 +1,23 @@
+<html>
+<body>
+
+<style type="text/css">
+body {
+  background: black;
+  color: #00CC00;
+  margin: 10px;
+}
+.pslist {
+  font: 10px courier;
+  white-space: pre;
+}
+</style>
+
+<tt>Container Processes</tt>
+  
+<pre class="pslist">
+<!--#exec cmd="ps -axf --width 100 -o pid,user,stat,cmd" -->
+</pre>
+
+</body>
+</html>

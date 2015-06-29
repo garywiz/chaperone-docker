@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 # If our host has an apt proxy container running at 3142, then use it for apt
 # This is a nice way to optimize builds.  Just 
 #   docker run sameersbn/apt-cacher-ng -p 3142:3142 and then your installs can use

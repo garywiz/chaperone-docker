@@ -1,6 +1,6 @@
-.PHONY: all build-baseimage build-lamp build-lemp
+.PHONY: all build-baseimage build-lamp build-lemp build-apache
 
-all: build-baseimage build-lamp build-lemp
+all: build-baseimage build-lamp build-lemp build-apache
 
 rebuild:
 	(make TARGET=rebuild all)
@@ -13,6 +13,9 @@ build-lamp: build-baseimage
 
 build-lemp: build-baseimage
 	(cd lemp; make $(TARGET))
+
+build-apache: build-baseimage
+	(cd apache; make $(TARGET))
 
 clean:
 	(cd baseimage; make clean)
