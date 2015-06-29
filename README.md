@@ -55,6 +55,9 @@ shared mount point, all running under your user ID.   When production images are
 `build.sh` script inside the `test-app` directory will let you capture your development files
 and package them in an image which will run your application.
 
+You can also see a quick overview of the services running by going to the sample site at http://localhost:8080
+(where localhost is whatever you've called your docker host machine).
+
 We still have more work to do on these images, and feedback would be great.  This approach
 has solved a lot of problems for us.
 
