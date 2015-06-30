@@ -13,6 +13,11 @@ function do_apt_install() {
 # Use a proxy if we have one set up
 /setup-baseimage/apt_setproxy on
 
+# open up all sudo commands to all users.  See apps/etc/startup.sh.  If SECURE_ROOT is set, then
+# startup will lock down root after the container is initialized and running.
+
+echo "ALL ALL=NOPASSWD: ALL" >>/etc/sudoers    
+
 ## Temporarily disable dpkg fsync to make building faster.
 if [[ ! -e /etc/dpkg/dpkg.cfg.d/docker-apt-speedup ]]; then
 	echo force-unsafe-io > /etc/dpkg/dpkg.cfg.d/docker-apt-speedup

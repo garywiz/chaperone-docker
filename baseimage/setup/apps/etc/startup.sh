@@ -22,7 +22,7 @@ export APPS_INIT=0
 if [ ! -f $cont_startup_file ]; then
     dolog "initializing container for the first time"
     CONTAINER_INIT=1
-    su -c "date >$cont_startup_file"
+    sudo bash "date >$cont_startup_file"
 fi
 
 if [ ! -f $apps_startup_file ]; then
@@ -42,5 +42,6 @@ fi
 
 if [ "$SECURE_ROOT" == "1" -a $CONTAINER_INIT == 1 ]; then
   dolog locking down root account
-  su -c 'passwd -l root'
+  sudo passwd -l root
+  sudo sed '/NOPASSWD/ d' -i /etc/sudoers
 fi

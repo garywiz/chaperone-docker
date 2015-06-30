@@ -24,7 +24,7 @@ CONSOLE_STATUS=`telchap status | awk '/CONSOLE/{print $4}'`
 
 if [ "$CONSOLE_STATUS" != 'starting' ]; then
   echo ""
-  if [ "$INTERACTIVE" == '1']; then
+  if [ "$INTERACTIVE" == '1' ]; then
     echo "You're running interactively, but there is no console application.  Perhaps"
     echo "you should add /bin/bash to the 'docker run' command line?"
     echo ""
