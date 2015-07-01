@@ -2,7 +2,7 @@
 # System-prep tasks for nginx
 
 puser=${USER:-www-data}
-needs_perm="/var/log/nginx $APPS_DIR/var/etc $APPS_DIR/var/etc $APPS_DIR/var/sites.d"
+needs_perm="/var/log/nginx $VAR_DIR/etc $VAR_DIR/sites.d"
 
 function dolog() { logger -t mysql.sh -p info $*; }
 

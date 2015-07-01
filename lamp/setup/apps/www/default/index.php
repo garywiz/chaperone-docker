@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <?php
    $appsdir = getenv("APPS_DIR");
+   $vardir = getenv("VAR_DIR");
    $appsdirtt = "<tt>" . $appsdir . "</tt>";
    $pagename = getenv("HTTPD_SERVER_NAME") . "+mysql container";
 
@@ -161,7 +162,7 @@ function highlight($instr, $words) {
 		    well as the "apps" directory by assuring permissions are correct
 		    and copying files if needed.  For example, one of the scripts in
 		    this directory creates and initializes the MySQL database directory
-		    in <tt><?php echo $appsdir; ?>/var/mysql</tt>.  
+		    in <tt><?php echo $vardir; ?>/mysql</tt>.  
 		    <p>
 		    If you want to install additional features when the container starts
 		    (and when you build a derivative image), then see <tt>00-install.sh</tt>.

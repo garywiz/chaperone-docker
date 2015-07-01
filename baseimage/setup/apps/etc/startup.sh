@@ -13,7 +13,7 @@
 
 function dolog() { logger -t startup.sh -p info $*; }
 
-apps_startup_file="$APPS_DIR/var/run/apps_startup.done"
+apps_startup_file="$VAR_DIR/run/apps_startup.done"
 cont_startup_file="/container_startup.done"
 
 export CONTAINER_INIT=0
@@ -22,14 +22,14 @@ export APPS_INIT=0
 if [ ! -f $cont_startup_file ]; then
     dolog "initializing container for the first time"
     CONTAINER_INIT=1
-    sudo bash "date >$cont_startup_file"
+    sudo bash -c "date >$cont_startup_file"
 fi
 
 if [ ! -f $apps_startup_file ]; then
     dolog "initializing $APPS_DIR for the first time"
     APPS_INIT=1
-    mkdir -p $APPS_DIR/var/run $APPS_DIR/var/log
-    chmod 777 $APPS_DIR/var/run $APPS_DIR/var/log
+    mkdir -p $VAR_DIR/run $VAR_DIR/log
+    chmod 777 $VAR_DIR/run $VAR_DIR/log
     date >$apps_startup_file
 fi
 

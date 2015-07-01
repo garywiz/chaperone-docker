@@ -83,5 +83,5 @@ http {
 	# Virtual Host Configs
 	##
 
-	include ${APPS_DIR}/var/sites.d/*.conf;
+	include ${VAR_DIR}/sites.d/*.conf;
 }
