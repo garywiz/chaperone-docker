@@ -165,7 +165,7 @@ function highlight($instr, $words) {
 		    in <tt><?php echo $vardir; ?>/mysql</tt>.  
 		    <p>
 		    If you want to install additional features when the container starts
-		    (and when you build a derivative image), then see <tt>00-install.sh</tt>.
+		    (and when you build a derivative image), then see <tt>100-install.sh</tt>.
 		  </div>
 		</div>
 	      </div>

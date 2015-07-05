@@ -39,4 +39,13 @@ echo "The 'chaplocal' script is ready to use.  Here is the help you get if you t
 echo "     ./chaplocal"
 echo "at the command line..."
 ./chaplocal       
+#################################################################################
+#
+# YOU SHOULD NOT BE SEEING THIS!!!!!!!!!  IF SO, YOU ARE NOT PIPING INTO sh!
+#
+# Make sure you pipe the output of your docker command into sh, like this...
+#
+#   docker run -i chapdev/chaperone-baseimage --command get-chaplocal | sh
+#                                                                     ^^^^
+#################################################################################
 EOF

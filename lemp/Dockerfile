@@ -7,5 +7,4 @@ RUN /setup-lemp/install.sh
 # Note underscore
 ENV _PARENT_IMAGE="chapdev/chaperone-lemp"
 
-EXPOSE 8080
-EXPOSE 8443
+EXPOSE 8080 8443

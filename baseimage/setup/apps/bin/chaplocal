@@ -3,7 +3,7 @@
 # for development or other purposes.
 
 DEFAULT_IMAGE="chapdev/chaperone-baseimage"
-VERSTR="chaplocal version 1.2"
+VERSTR="chaplocal version 1.21"
 
 if [ "$CHAP_SERVICE_NAME" != "" ]; then
    echo "The 'chaplocal' script is not intended to be run inside a container,"
@@ -96,19 +96,19 @@ rm -rf /apps/chaperone.d /apps/startup.d
 echo copying application files to /apps ...
 tar cf - --exclude 'build*' --exclude 'run.sh' . | (cd /apps; tar xf -)
 
-# If there is an 00-install.sh executable script available in startup.d, then incorporate
+# If there is an 100-install.sh executable script available in startup.d, then incorporate
 # it into our image build and comment them out so the next build documents, but does not
 # include them.
 
-if [ -x startup.d/00-install.sh ]; then
+if [ -x startup.d/100-install.sh ]; then
   # Execute these
-  ./startup.d/00-install.sh BUILD
+  ./startup.d/100-install.sh BUILD
   # Comment them out so the install file can be incrementally used again.
-  sed -r '/AFTER THIS LINE/,$ s/^[ \t]*[^# \t].*/#\0/' startup.d/00-install.sh >/apps/startup.d/00-install.sh
+  sed -r '/AFTER THIS LINE/,$ s/^[ \t]*[^# \t].*/#\0/' startup.d/100-install.sh >/apps/startup.d/100-install.sh
 fi
 
 # Add additional setup commands for your production image here, if any.  However, the best
-# way is to put things in 00-install.sh.
+# way is to put things in 100-install.sh.
 # ...
 
 rm -rf /setup
@@ -161,6 +161,9 @@ cat >$APPSDIR/run.sh <<EOF
 IMAGE="$IMAGE"
 DOCKERHOST=\`hostname\`
 
+# Uncomment to hardcode ports for startup.  Command line still overrides.
+#PORTOPT="-p x:y -p x:y"
+
 usage() {
   echo "Usage: run.sh [-d] [-p port#] [-h] [extra-chaperone-options]"
   echo "       Run $IMAGE as a daemon or interactively (the default)."
@@ -182,7 +185,7 @@ while getopts ":-dp:" o; do
       shellopt=""
       ;;
     p)
-      portopt="-p \$OPTARG"
+      PORTOPT="-p \$OPTARG"
       ;;      
     -) # first long option terminates
       break
@@ -194,23 +197,32 @@ while getopts ":-dp:" o; do
 done
 shift \$((OPTIND-1))
 
+# remap ports according to the image, and tell the container about the lowest numbered
+# port used.
+
+if [ "\$PORTOPT" == "" ]; then
+  exposed=\`docker inspect $IMAGE | sed -ne 's/^ *"\([0-9]*\)\/tcp".*\$/\1/p' - | sort -u\`
+  if [ "\$exposed" != "" -a -x /bin/nc ]; then
+    PORTOPT=""
+    for PORT in \$exposed; do
+      if ! /bin/nc -z \$DOCKERHOST \$PORT; then
+	 [ "\$PORTOPT" == "" ] && PORTOPT="--env EXTERN_HOSTPORT=\$DOCKERHOST:\$PORT"
+         PORTOPT="\$PORTOPT -p \$PORT:\$PORT"
+	 echo "Port \$PORT available at \$DOCKERHOST:\$PORT ..."
+      fi
+    done
+  fi
+fi
+
 # Extract our local UID/GID
 myuid=\`id -u\`
 mygid=\`id -g\`
-
-if [ "\$portopt" == "" ]; then
-  exposed=\`docker inspect \$IMAGE | sed -ne 's/^ *"\\([0-9]*\\)\\/tcp".*$/\\1/p' - | head -1\`
-  if [ "\$exposed" != "" -a -x /bin/nc ] && ! /bin/nc -z \$DOCKERHOST \$exposed; then
-    portopt="-p \$exposed:\$exposed --env EXTERN_HOSTPORT=\$DOCKERHOST:\$exposed"
-    echo "Port \$exposed available at \$DOCKERHOST:\$exposed ..."
-  fi
-fi
 
 # Run the image with this directory as our local apps dir.
 # Create a user with uid=\$myuid inside the container so the mountpoint permissions
 # are correct.
 
-docker run \$options -v /home:/home \$portopt $IMAGE \\
+docker run \$options -v /home:/home \$PORTOPT \$IMAGE \\
    --create \$USER/\$myuid --config \$APPS/chaperone.d \$* \$shellopt
 EOF
 chmod ugo+x $APPSDIR/run.sh
