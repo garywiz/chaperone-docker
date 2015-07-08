@@ -2,7 +2,7 @@
 
 puser=${USER:-www-data}
 
-function dolog() { logger -t mysql.sh -p info $*; }
+function dolog() { logger -t phpmyadmin.sh -p info $*; }
 
 if [ $CONTAINER_INIT == 1 ]; then
   dolog setting phpmyadmin user permissions for "$puser"

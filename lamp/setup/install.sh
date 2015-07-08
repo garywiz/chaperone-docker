@@ -43,7 +43,7 @@ do_apt_install -y mysql-server
 
 # Install phpmyadmin.  Actual setup occurs at first boot, since it depends on what user we run the container
 # as.
-do_apt_install phpmyadmin
+do_apt_install phpmyadmin php5-cli
 php5enmod mcrypt
 
 # Commonly used php stuff

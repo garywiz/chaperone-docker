@@ -166,7 +166,7 @@ DOCKERHOST=\`hostname\`
 
 usage() {
   echo "Usage: run.sh [-d] [-p port#] [-h] [extra-chaperone-options]"
-  echo "       Run $IMAGE as a daemon or interactively (the default)."
+  echo "       Run \$IMAGE as a daemon or interactively (the default)."
   echo "       First available port will be remapped to \$DOCKERHOST if possible."
   exit
 }
@@ -201,7 +201,7 @@ shift \$((OPTIND-1))
 # port used.
 
 if [ "\$PORTOPT" == "" ]; then
-  exposed=\`docker inspect $IMAGE | sed -ne 's/^ *"\([0-9]*\)\/tcp".*\$/\1/p' - | sort -u\`
+  exposed=\`docker inspect \$IMAGE | sed -ne 's/^ *"\([0-9]*\)\/tcp".*\$/\1/p' - | sort -u\`
   if [ "\$exposed" != "" -a -x /bin/nc ]; then
     PORTOPT=""
     for PORT in \$exposed; do
