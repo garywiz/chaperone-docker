@@ -7,7 +7,7 @@ function dolog() { logger -t mysql.sh -p info $*; }
 
 if [ $CONTAINER_INIT == 1 ]; then
     dolog "hiding distribution mysql files in /etc so no clients see them"
-    sudo bash -c "cd /etc; mv my.cnf my.cnf-dist; mv mysql mysql-dist; mv $distdir $distdir-dist"
+    sudo bash -c "cd /etc; mv my.cnf my.cnf-dist; mv mysql mysql-dist; mv $distdir $distdir-dist" >&/dev/null
 fi
 
 if [ $APPS_INIT == 1 ]; then

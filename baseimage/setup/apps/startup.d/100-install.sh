@@ -14,7 +14,7 @@ if [ "$1" != "BUILD" ]; then
   # CONTAINER STARTUP MODE 
   INSTALL_LOG=$VAR_DIR/log/install.log
   # Re-run this script as root, but only container initialization
-  [ "$CONTAINER_INIT" == "1$1" ] && sudo $0 GO >$INSTALL_LOG 2>&1
+  [ "$CONTAINER_INIT" == "1$1" ] && sudo $0 GO </dev/null >$INSTALL_LOG 2>&1
   [ "$1" != "GO" ] && exit
   log_startup="logger -p warn Installing additional software (progress in $INSTALL_LOG)"
 else
