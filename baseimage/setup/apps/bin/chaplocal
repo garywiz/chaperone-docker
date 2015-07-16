@@ -3,7 +3,7 @@
 # for development or other purposes.
 
 DEFAULT_IMAGE="chapdev/chaperone-baseimage"
-VERSTR="chaplocal version 1.21"
+VERSTR="chaplocal version 1.22"
 
 if [ "$CHAP_SERVICE_NAME" != "" ]; then
    echo "The 'chaplocal' script is not intended to be run inside a container,"
@@ -74,6 +74,7 @@ fi
 
 function initapps() {
 
+if [ ! -d $APPSDIR/build ]; then
 mkdir -p $APPSDIR/build
 
 cat >$APPSDIR/build/Dockerfile <<EOF
@@ -90,11 +91,11 @@ cat >$APPSDIR/build/install.sh <<'QEOF'
 cd /setup
 
 # remove existing chaperone.d and startup.d from /apps so none linger
-rm -rf /apps/chaperone.d /apps/startup.d
+rm -rf /apps; mkdir /apps
 
 # copy everything from setup to the root /apps
 echo copying application files to /apps ...
-tar cf - --exclude 'build*' --exclude 'run.sh' . | (cd /apps; tar xf -)
+tar cf - . | (cd /apps; tar xf -)
 
 # If there is an 100-install.sh executable script available in startup.d, then incorporate
 # it into our image build and comment them out so the next build documents, but does not
@@ -114,7 +115,9 @@ fi
 rm -rf /setup
 QEOF
 chmod ugo+x $APPSDIR/build/install.sh
+fi
 
+if [ ! -f $APPSDIR/bash.bashrc ]; then
 cat >$APPSDIR/bash.bashrc <<'QEOF'
 # Bash start-up file, created by chaplocal
 
@@ -131,7 +134,9 @@ if [ "$EXTERN_HOSTPORT" != "" -a "$HTTPD_SERVER_NAME" != "" ]; then
 fi
 
 QEOF
+fi
 
+if [ ! -f $APPSDIR/build.sh ]; then
 cat >$APPSDIR/build.sh <<EOF
 #!/bin/bash
 #Created by chaplocal on `date`
@@ -153,7 +158,9 @@ fi
 tar czh --exclude '*~' --exclude 'var/*' . | docker build -t \$prodimage -f build/Dockerfile -
 EOF
 chmod ugo+x $APPSDIR/build.sh
+fi
 
+if [ ! -f $APPSDIR/run.sh ]; then
 cat >$APPSDIR/run.sh <<EOF
 #!/bin/bash
 #Created by chaplocal on `date`
@@ -226,6 +233,8 @@ docker run \$options -v /home:/home \$PORTOPT \$IMAGE \\
    --create \$USER/\$myuid --config \$APPS/chaperone.d \$* \$shellopt
 EOF
 chmod ugo+x $APPSDIR/run.sh
+fi
+
 }
 
 # Copy the boilerplate apps directory into this development directory where it can be
