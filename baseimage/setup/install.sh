@@ -91,6 +91,12 @@ sed -i 's/nullok_secure/nullok/' /etc/pam.d/common-auth
 # Create default /apps directory
 cp -a /setup-baseimage/apps /
 
+# Set up runapps user
+
+groupadd -g 901 runapps
+useradd -g runapps -u 901 --no-create-home --home-dir / runapps
+chown -R runapps: /apps
+
 # Clean up apt
 apt-get clean
 /setup-baseimage/apt_setproxy off

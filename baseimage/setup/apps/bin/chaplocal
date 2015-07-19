@@ -3,7 +3,7 @@
 # for development or other purposes.
 
 DEFAULT_IMAGE="chapdev/chaperone-baseimage"
-VERSTR="chaplocal version 1.22"
+VERSTR="chaplocal version 1.23"
 
 if [ "$CHAP_SERVICE_NAME" != "" ]; then
    echo "The 'chaplocal' script is not intended to be run inside a container,"
@@ -111,6 +111,8 @@ fi
 # Add additional setup commands for your production image here, if any.  However, the best
 # way is to put things in 100-install.sh.
 # ...
+
+chown -R runapps: /apps    # for full-container execution
 
 rm -rf /setup
 QEOF
@@ -242,7 +244,7 @@ fi
 if [ ! -d $APPSDIR ]; then
     echo ""
     echo Extracting /apps default directory into $APPSDIR ...
-    docker run -i --rm=true -v /home:/home $IMAGE --disable --exitkills --log err \
+    docker run -i --rm=true -v /home:/home $IMAGE --disable --exitkills --log err --user root \
 	/bin/bash -c "cp -a /apps $APPSDIR; chown -R $myuid:$mygid $APPSDIR"
     initapps
     echo "You can customize the contents of $APPSDIR to tailor it for your application,"

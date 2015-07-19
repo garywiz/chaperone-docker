@@ -12,6 +12,7 @@
 # so it can be reused when starting up containers which refer to it.
 
 function dolog() { logger -t startup.sh -p info $*; }
+function critlog() { logger -t startup.sh -p crit $*; }
 
 apps_startup_file="$VAR_DIR/run/apps_startup.done"
 cont_startup_file="/container_startup.done"
@@ -28,6 +29,11 @@ fi
 if [ ! -f $apps_startup_file ]; then
     dolog "initializing $APPS_DIR for the first time"
     APPS_INIT=1
+    mkdir -p $VAR_DIR >&/dev/null
+    if [ ! -w $VAR_DIR ]; then
+	critlog "$VAR_DIR is not writable by user '$USER' -- cannot complete set-up"
+	exit 1
+    fi
     mkdir -p $VAR_DIR/run $VAR_DIR/log
     chmod 777 $VAR_DIR/run $VAR_DIR/log
     date >$apps_startup_file

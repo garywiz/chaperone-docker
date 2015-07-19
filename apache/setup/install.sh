@@ -19,6 +19,7 @@ apt-get update
 
 # Copy new apps files into /apps
 cp -av /setup-apache/apps/* /apps
+chown -R runapps: /apps
 
 # Remove sample application from chaperone.d
 rm /apps/chaperone.d/200-userapp.conf
