@@ -22,7 +22,7 @@ clean:
 	(cd lamp; make clean)
 	rm -rf `find . -name '*~'`
 
-push: rebuild
+push:
 	docker push chapdev/chaperone-baseimage
 	docker push chapdev/chaperone-apache
 	docker push chapdev/chaperone-lamp
