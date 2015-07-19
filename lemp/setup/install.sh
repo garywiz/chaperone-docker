@@ -53,6 +53,9 @@ php5enmod mcrypt
 # Commonly used php stuff
 do_apt_install php-pear
 
+# Properly shut down MySQL
+mysqladmin -u root --password=$MYSQL_ROOT_PW shutdown
+
 # Clean up apt
 apt-get clean
 /setup-lemp/apt_setproxy off
