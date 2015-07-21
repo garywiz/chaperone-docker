@@ -11,11 +11,11 @@ echo "You can disable this application, or replace it with your own by examining
 echo "the $APPS_DIR/chaperone.d/200-userapp.conf configuration file."
 echo ""
 
-if [ "$USER" != '' ]; then
+if [ "$USER" != 'runapps' ]; then
 echo "Your container is running as user '$USER'.  This most likely means that your"
 echo "application directory is shared with your host for easy development."
 else
-echo "Your container is running as 'root'.  This looks like a production environment"
+echo "Your container is running as '$USER'.  This looks like a production environment"
 echo "and all configuration is stored within the container's filesystem".
 fi
 

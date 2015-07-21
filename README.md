@@ -3,7 +3,7 @@
 This repository is used to build two base-iamges which use the
 [Chaperone](http://garywiz.github.io/chaperone/guide/chap-intro.html) lightweight process manager.
 
-Two images are included:
+Several images are included:
 
  * chaperone-baseimage (A framework for Chaperone-based development.  On
    [Docker Hub as chaperone-baseimage](https://registry.hub.docker.com/u/chapdev/chaperone-baseimage).
@@ -13,6 +13,8 @@ Two images are included:
    [Docker Hub as chaperone-lemp](https://registry.hub.docker.com/u/chapdev/chaperone-lemp).
  * chaperone-apache (An Apache-only image, managed by Chaperone.  On
    [Docker Hub as chaperone-lemp](https://registry.hub.docker.com/u/chapdev/chaperone-apache).
+ * chaperone-alpinebase (A 55MB Alpine Linux image including Python3, managed by Chaperone.  On
+   [Docker Hub as chaperone-lemp](https://registry.hub.docker.com/u/chapdev/chaperone-alpinebase).
    
 Chaperone is a lightweight process manager specifically designed as an ENTRYPOINT for Docker containers that runs as PID 1.  As a single
 controlling process, it provides:

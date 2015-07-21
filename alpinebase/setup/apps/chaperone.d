@@ -1,0 +1,1 @@
+../../../baseimage/setup/apps/chaperone.d
