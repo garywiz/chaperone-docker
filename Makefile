@@ -17,7 +17,7 @@ build-lemp: build-baseimage
 build-apache: build-baseimage
 	(cd apache; make $(TARGET))
 
-build-apache: build-alpinebase
+build-alpinebase: build-alpinebase
 	(cd alpinebase; make $(TARGET))
 
 clean:
