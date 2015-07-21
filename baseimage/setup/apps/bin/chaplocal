@@ -220,6 +220,9 @@ if [ "\$PORTOPT" == "" ]; then
 	 echo "Port \$PORT available at \$DOCKERHOST:\$PORT ..."
       fi
     done
+  else
+    echo "Note: '/bin/nc' not installed, so cannot detect port usage on this system."
+    echo "      Use '\$0 -p x:y' to expose ports."
   fi
 fi
 

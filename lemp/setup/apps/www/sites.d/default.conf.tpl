@@ -48,6 +48,12 @@ server {
 	location /phpmyadmin {
 	        root /usr/share;
 	        include ${VAR_DIR}/sites.d/php-fast.inc;
+		location ~* \.(?:ico|css|js|gif|jpe?g|png)$ {
+			# Some basic cache-control for static files to be sent to the browser
+			expires max;
+			add_header Pragma public;
+			add_header Cache-Control "public, must-revalidate, proxy-revalidate";
+		}
 	}
 
 	location ~ \.php {
