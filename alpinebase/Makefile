@@ -1,16 +1,10 @@
-include ../include/make.inc
-
 IMAGE_NAME = chaperone-alpinebase
 
-.PHONY: all build binaries
-
-all: build
+include ../include/make.inc
 
 build:   binaries
-	$(DOCKER_BUILD)
 
 rebuild: binaries
-	$(DOCKER_REBUILD)
 
 binaries: setup/lib/setproctitle-install.tar.gz
 

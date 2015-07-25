@@ -40,7 +40,7 @@ if [ ! -f $apps_startup_file ]; then
 fi
 
 if [ -d $APPS_DIR/startup.d ]; then
-  for sf in $( find $APPS_DIR/startup.d -type f -executable \! -name '*~' ); do
+  for sf in $( find $APPS_DIR/startup.d -type f -executable \! -name '*~' | sort ); do
     dolog "running $sf..."
     $sf
   done

@@ -1,0 +1,21 @@
+#!/usr/bin/env expect-test-image
+
+~../../include/general.elt
+
+>fgrep startup.sh /apps/var/log/syslog.log 
+<initializing container for the first time
+<initializing /apps for the first time
+<running.*100-install
+<running.*150-ssl-setup
+
+>ps axw
+<\[chaperone\]
+</usr/sbin/apache2 -f /apps/etc/apache2.conf
+
+# Check to see if the web page is executing properly
+
+>curl http://localhost:8080 | fgrep ls-high
+< etc
+< startup.d
+< var
+< www

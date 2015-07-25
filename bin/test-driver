@@ -1,0 +1,43 @@
+#!/bin/bash
+# Assumes the current directory contains executable files and runs them all.
+
+function relpath() { python -c "import os; print(os.path.relpath('$1', '$2' or os.curdir))"; }
+
+TESTDIR=$1
+IMAGE_NAME=$2
+LOGDIR=$3
+LOGFILE=$LOGDIR/$IMAGE_NAME.log
+export EL_TEST_IMAGE=chapdev/$IMAGE_NAME
+
+if [ ! -d $TESTDIR ]; then
+   exit
+fi
+
+if [ "`which expect-lite`" == "" ]; then
+   echo "expect-lite must be installed for tests to run"
+   exit 1
+fi
+
+mkdir -p $LOGDIR
+
+(
+  exitcode=0
+  cd $TESTDIR
+  rm -rf $LOGFILE
+  for sf in $( find . -type f -executable \! -name '*~' ); do
+    echo "Running $IMAGE_NAME $sf"
+    echo "Running $IMAGE_NAME $sf" >>$LOGFILE
+    if ! $sf >>$LOGFILE 2>&1; then
+      echo "TEST FAILED: $IMAGE_NAME $sf (see $(relpath $LOGFILE.err $TOPLEV_DIR))"
+      exitcode=2
+    fi
+  done
+  if [ $exitcode == 0 ]; then
+      echo "Tests passed for $IMAGE_NAME"
+  else
+      if [ -f $LOGFILE ]; then
+	  mv $LOGFILE $LOGFILE.err
+      fi
+  fi
+  exit $exitcode
+)

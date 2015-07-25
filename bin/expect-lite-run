@@ -1,0 +1,3 @@
+#!/bin/bash
+
+exec docker run -i -t --rm $EL_TEST_IMAGE /bin/bash

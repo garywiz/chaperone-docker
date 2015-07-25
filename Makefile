@@ -1,33 +1,14 @@
-.PHONY: all build-baseimage build-lamp build-lemp build-apache build-alpinebase rebuild clean push
+TARGETS=baseimage apache lamp lemp alpinebase
+SHELL=/bin/bash
 
-all: build-baseimage build-lamp build-lemp build-apache build-alpinebase
+.PHONY: all build rebuild clean push
 
-rebuild:
-	(make TARGET=rebuild all)
-
-build-baseimage:
-	(cd baseimage; make $(TARGET))
-
-build-lamp: build-baseimage
-	(cd lamp; make $(TARGET))
-
-build-lemp: build-baseimage
-	(cd lemp; make $(TARGET))
-
-build-apache: build-baseimage
-	(cd apache; make $(TARGET))
-
-build-alpinebase: build-alpinebase
-	(cd alpinebase; make $(TARGET))
+all build rebuild test:
+	for sf in $(TARGETS); do (cd $$sf; $(MAKE) $@) || break; done
 
 clean:
-	(cd baseimage; make clean)
-	(cd lamp; make clean)
-	rm -rf `find . -name '*~'`
+	for sf in $(TARGETS); do (cd $$sf; $(MAKE) $@) || break; done
+	rm -rf `find . -name '*~'` test_logs
 
-push:
-	docker push chapdev/chaperone-baseimage
-	docker push chapdev/chaperone-apache
-	docker push chapdev/chaperone-lamp
-	docker push chapdev/chaperone-lemp
-	docker push chapdev/chaperone-alpinebase
+push:   test
+	for sf in $(TARGETS); do echo docker push chapdev/chaperone-$$sf; done

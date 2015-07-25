@@ -2,15 +2,11 @@ include ../include/make.inc
 
 IMAGE_NAME = chaperone-baseimage
 
-.PHONY: all build binaries
+.PHONY: binaries
 
-all: build
-
-build:   binaries
-	$(DOCKER_BUILD)
+build: binaries
 
 rebuild: binaries
-	$(DOCKER_REBUILD)
 
 binaries: setup/lib/setproctitle-install.tar.gz
 

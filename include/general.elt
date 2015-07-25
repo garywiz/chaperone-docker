@@ -1,0 +1,18 @@
+*EOLS LF
+@5
+
+# General tests which all chaperone builds should pass
+
+; Basic install test
+>chaperone --version
+<This is 'chaperone'
+
+; Check environment variables
+>env | sort
+>APPS_DIR=/apps
+>VAR_DIR=/apps/var
+>USER=runapps
+
+; Check to be sure chaperone is running as PID 1
+>ps ax
+< +1 .+:00 \[chaperone\] /bin/bash
