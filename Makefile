@@ -11,4 +11,4 @@ clean:
 	rm -rf `find . -name '*~'` test_logs
 
 push:   test
-	for sf in $(TARGETS); do echo docker push chapdev/chaperone-$$sf; done
+	for sf in $(TARGETS); do docker push chapdev/chaperone-$$sf; done
