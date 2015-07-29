@@ -15,6 +15,11 @@ echo "ALL ALL=NOPASSWD: ALL" >>/etc/sudoers
 apk add --update musl python3 bash sudo
 pip3 install chaperone
 
+# get rid of annoying color prompts (some people must like this, but on some color schemes,
+# things are unreadable).
+
+rm -rf /etc/profile.d/color_prompt
+
 # Now, just so there is no confusion, create a new, empty /var/log directory so that any logs
 # written will obviously be written by the current container software.  Keep the old one so
 # it's there for reference so we can see what the distribution did.

@@ -6,29 +6,29 @@
 # We publish two variables for use in startup scripts:
 #
 #   CONTAINER_INIT=1   if we are initializing the container for the first time
-#   APPS_INIT=1        if we are initializing the $APPS_DIR for the first time
+#   VAR_INIT=1        if we are initializing the $VAR_DIR for the first time
 #
-# Both may be relevant, since it's possible that the $APPS_DIR may be on a mount point
+# Both may be relevant, since it's possible that the $VAR_DIR may be on a mount point
 # so it can be reused when starting up containers which refer to it.
 
 function dolog() { logger -t startup.sh -p info $*; }
 function critlog() { logger -t startup.sh -p crit $*; }
 
-apps_startup_file="$VAR_DIR/run/apps_startup.done"
-cont_startup_file="/container_startup.done"
+var_setup_file="$VAR_DIR/run/var_setup.done"
+cont_setup_file="/container_setup.done"
 
 export CONTAINER_INIT=0
-export APPS_INIT=0
+export VAR_INIT=0
 
-if [ ! -f $cont_startup_file ]; then
+if [ ! -f $cont_setup_file ]; then
     dolog "initializing container for the first time"
     CONTAINER_INIT=1
-    sudo bash -c "date >$cont_startup_file"
+    sudo bash -c "date >$cont_setup_file"
 fi
 
-if [ ! -f $apps_startup_file ]; then
-    dolog "initializing $APPS_DIR for the first time"
-    APPS_INIT=1
+if [ ! -f $var_setup_file ]; then
+    dolog "initializing $VAR_DIR for the first time"
+    VAR_INIT=1
     mkdir -p $VAR_DIR >&/dev/null
     if [ ! -w $VAR_DIR ]; then
 	critlog "$VAR_DIR is not writable by user '$USER' -- cannot complete set-up"
@@ -36,7 +36,7 @@ if [ ! -f $apps_startup_file ]; then
     fi
     mkdir -p $VAR_DIR/run $VAR_DIR/log
     chmod 777 $VAR_DIR/run $VAR_DIR/log
-    date >$apps_startup_file
+    date >$var_setup_file
 fi
 
 if [ -d $APPS_DIR/startup.d ]; then
