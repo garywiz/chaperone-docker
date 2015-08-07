@@ -1,0 +1,13 @@
+#!/usr/bin/env expect-test-command
+
+@5
+>TASK get-help
+<for Image: chapdev/chaperone-alpinebase
+<Take a look at the configuration files
+>TASK get-launcher | sh
+<Extracting run-alpinebase
+>./run-alpinebase.sh
+<NOTE: This is output from /apps/sample_app
+<Your container is running as 'runapps'
+>exit
+>rm run-alpinebase.sh

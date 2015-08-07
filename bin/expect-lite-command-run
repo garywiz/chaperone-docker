@@ -1,0 +1,5 @@
+#!/bin/bash
+
+function TASK() { docker run -i -t --rm $EL_TEST_IMAGE --task $1; }
+export -f TASK
+bash -i

@@ -1,0 +1,3 @@
+#!/bin/bash
+# Standard options used for all default template expansions
+exec envcp --xprefix '%' --xgroup '(' --shell $*

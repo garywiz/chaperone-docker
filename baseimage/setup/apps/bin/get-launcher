@@ -1,0 +1,71 @@
+#!/bin/bash
+
+if [ "$CHAP_SERVICE_NAME" != "" ]; then
+  stty -onlcr 2>/dev/null	# inhibits carriage return if -t was specified
+fi
+
+if [ "$CHAP_TASK_MODE" != "1" ]; then
+  echo "get-chaplocal' should only be run in chaperone --task mode from the docker host"
+  exit 1
+fi
+
+cat <<EOF
+#################################################################################
+#
+# YOU SHOULD NOT BE SEEING THIS!!!!!!!!!  IF SO, YOU ARE NOT PIPING INTO sh!
+#
+# Make sure you pipe the output of your docker command into sh, like this...
+#
+#   docker run -i chapdev/chaperone-baseimage --command get-launcher | sh
+#                                                                    ^^^^
+#################################################################################
+EOF
+
+function expand_template() { tpl_envcp - <$1; }
+skel=$APPS_DIR/etc/skel
+
+[ -d $skel/launcher ] && tplfiles=`find $skel/launcher -name '*.tpl'`
+
+if [ "$tplfiles" == "" ]; then
+cat <<EOF
+echo "Sorry, this image does not define any launcher scripts."
+EOF
+else
+source $skel/shell_vars.inc
+for lf in $tplfiles; do
+  realname=$(transform_filename $lf)
+  echo "[ -f $realname ] && errors=1 && echo \"ALREADY EXISTS: $realname (won't overwrite)\""
+done
+echo "[ \"\$errors\" = "1" ] && { cat >/dev/null; exit 1; }"
+for lf in $tplfiles; do
+  realname=$(transform_filename $lf)
+  contents=$(expand_template $lf)
+  cat <<EOF
+  echo "Extracting $realname ..."
+  cat >$realname <<"--EOF--"
+$contents
+--EOF--
+  chmod 755 $realname
+EOF
+done
+if [ -f "$skel/help/LAUNCHER.tpl" ]; then
+cat <<EOF
+  cat <<"--EOF--"
+$(expand_template $skel/help/LAUNCHER.tpl)
+--EOF--
+EOF
+else
+  echo "echo done."
+fi
+fi
+cat <<EOF
+#################################################################################
+#
+# YOU SHOULD NOT BE SEEING THIS!!!!!!!!!  IF SO, YOU ARE NOT PIPING INTO sh!
+#
+# Make sure you pipe the output of your docker command into sh, like this...
+#
+#   docker run -i chapdev/chaperone-baseimage --command get-launcher | sh
+#                                                                    ^^^^
+#################################################################################
+EOF

@@ -1,3 +1,19 @@
 Put commands which need to be executed at the command line, or by application
 programs here.  This directory will automaticaly be included the path for all
 running services.
+
+Some files you may find here:
+
+chaplocal
+  This is a template for the chaplocal program, used to set up a container
+  development environment.
+
+get-chaplocal
+  Executed as a --task to retrieve a custom version of the 'chaplocal' script.
+
+get-help
+  Executed as a --task to provide help for the image (see ../etc/task-templates)
+
+get-launcher
+  Executed as a --task to create launch scripts to launch the image
+  (see ../etc/task-templates)

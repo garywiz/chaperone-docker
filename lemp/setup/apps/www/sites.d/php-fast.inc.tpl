@@ -20,5 +20,5 @@ location ~ \.php$ {
 	        fastcgi_param  SERVER_PORT        $server_port;
 	        fastcgi_param  SERVER_NAME        $server_name;
  
-	        fastcgi_pass unix:${PHPFFM_SOCKET};
+	        fastcgi_pass unix:%(PHPFFM_SOCKET);
 }

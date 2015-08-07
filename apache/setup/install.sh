@@ -21,7 +21,7 @@ apt-get update
 cp -av /setup-apache/apps/* /apps
 chown -R runapps: /apps
 
-# Remove sample application from chaperone.d
+# Remove sample application and irrelevant templates
 rm /apps/chaperone.d/200-userapp.conf
 rm /apps/bin/sample_app
 

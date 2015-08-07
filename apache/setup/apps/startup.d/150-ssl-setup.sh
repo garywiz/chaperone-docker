@@ -1,15 +1,15 @@
 #!/bin/bash
 
-# Takes care of setting up SSL by generating a snakeoil key (self-signed) whenever SSL_HOSTNAME
-# is defined.   You'll need to reconfigure your webserver with actual keys if you want to
-# serve https properly.
+# Takes care of setting up SSL by generating a snakeoil key (self-signed) whenever 
+# CONFIG_EXT_SSL_HOSTNAME is defined.   You'll need to reconfigure your webserver with
+# actual keys if you want to serve https properly.
 
 certpem=$VAR_DIR/certs/ssl-cert-snakeoil.pem
 certkey=$VAR_DIR/certs/ssl-cert-snakeoil.key
 
-# Only if we have SSL_HOSTNAME...
+# Only if we have CONFIG_EXT_SSL_HOSTNAME...
 
-if [ "$SSL_HOSTNAME" != "" ]; then
+if [ "$CONFIG_EXT_SSL_HOSTNAME" != "" ]; then
     # Generate testing certs if they aren't here.
     if [ ! -f $certpem ]; then
 	template="$APPS_DIR/etc/ssleay.cnf"
@@ -20,7 +20,7 @@ if [ "$SSL_HOSTNAME" != "" ]; then
 
 	TMPFILE="$(mktemp)" || exit 1
 
-	sed -e s#@HostName@#"$SSL_HOSTNAME"# $template > $TMPFILE
+	sed -e s#@HostName@#"$CONFIG_EXT_SSL_HOSTNAME"# $template > $TMPFILE
 
 	# create the certificate.
 
@@ -37,7 +37,9 @@ if [ "$SSL_HOSTNAME" != "" ]; then
     # Enable apache SSL...
     # If this FAILS it is probably because (a) SECURE_ROOT was set to true and
     # (b) the SSL hostname was added after the apps directory was already initailized.
-    sudo a2enmod ssl
+    if [ "$HTTP_SERVER_NAME" == 'apache' ]; then
+      sudo a2enmod ssl
+    fi
 
 fi
 

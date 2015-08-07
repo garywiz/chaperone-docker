@@ -6,9 +6,9 @@
 error_log syslog:server=unix:/dev/log;
 
 worker_processes 4;
-working_directory ${APPS_DIR};
+working_directory %(APPS_DIR);
 
-pid ${NGINX_PID_FILE};
+pid %(NGINX_PID_FILE);
 
 events {
 	worker_connections 768;
@@ -46,7 +46,7 @@ http {
 	# Logging Settings
 	##
 
-	access_log ${NGINX_LOG_DIR}/access.log;
+	access_log %(NGINX_LOG_DIR)/access.log;
 
 	##
 	# Gzip Settings
@@ -83,5 +83,5 @@ http {
 	# Virtual Host Configs
 	##
 
-	include ${VAR_DIR}/sites.d/*.conf;
+	include %(VAR_DIR)/sites.d/*.conf;
 }

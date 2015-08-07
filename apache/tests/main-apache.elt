@@ -2,6 +2,7 @@
 
 ~../../include/general.elt
 
+@5
 >fgrep startup.sh /apps/var/log/syslog.log 
 <initializing container for the first time
 <initializing /apps/var for the first time

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [ "$CHAP_SERVICE_NAME" != "" ]; then
+  stty -onlcr 2>/dev/null	# inhibits carriage return if -t was specified
+fi
+
+if [ "$CHAP_TASK_MODE" != "1" ]; then
+  echo "get-chaplocal' should only be run in chaperone --task mode from the docker host"
+  exit 1
+fi
+
+helpfile=HELP
+
+if [ "$1" != "" -a "$1" != "/bin/bash" ]; then
+  helpfile="$1"
+fi
+
+function expand_template() { tpl_envcp - <$1; }
+skel=$APPS_DIR/etc/skel
+
+if [ ! -f "$skel/help/$helpfile.tpl" ]; then
+  cat <<EOF
+This image provides no $helpfile documentation file, sorry. :-(
+EOF
+else
+  source $skel/shell_vars.inc
+  cat <<EOF
+$(expand_template $skel/help/$helpfile.tpl)
+EOF
+fi

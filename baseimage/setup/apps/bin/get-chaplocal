@@ -28,6 +28,7 @@ cat <<EOF
 #################################################################################
 if [ -f chaplocal ]; then
   echo "'chaplocal' script already exists in this directory. Won't overwrite."
+  cat >/dev/null
   exit 1
 fi
 cat >chaplocal <<'-QEOF-'
