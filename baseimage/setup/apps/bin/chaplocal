@@ -3,7 +3,7 @@
 # for development or other purposes.
 
 DEFAULT_IMAGE="chapdev/chaperone-baseimage"
-VERSTR="chaplocal version 1.23"
+VERSTR="chaplocal version 1.30"
 
 if [ "$CHAP_SERVICE_NAME" != "" ]; then
    echo "The 'chaplocal' script is not intended to be run inside a container,"
@@ -38,7 +38,7 @@ elif [ $# != 2 ]; then
    echo "Will run all container processes under the current user account with the"
    echo "local drive mounted as a shared volume in the container."
    echo ""
-   echo "If not specified, the the image '$DEFAULT_IMAGE' will be used."
+   echo "If not specified, then the image '$DEFAULT_IMAGE' will be used."
    echo ""
    exit
 fi
@@ -55,10 +55,6 @@ if [ "${PWD:0:6}" != "/home/" ]; then
   exit 1
 fi
 
-# Extract our local UID/GID
-myuid=`id -u`
-mygid=`id -g`
-
 if [[ "$IMAGE" != *":"* ]]; then
   IMAGE=$IMAGE:latest
 fi
@@ -72,186 +68,17 @@ if [ "`docker inspect $IMAGE >/dev/null 2>&1 && echo yes`" != "yes" ]; then
   exit 1
 fi
 
-function initapps() {
-
-if [ ! -d $APPSDIR/build ]; then
-mkdir -p $APPSDIR/build
-
-cat >$APPSDIR/build/Dockerfile <<EOF
-FROM $IMAGE
-ADD . /setup/
-#Used to specify the default chaplocal image
-#ENV _PARENT_IMAGE="$IMAGE"
-RUN /setup/build/install.sh
-EOF
-
-cat >$APPSDIR/build/install.sh <<'QEOF'
-#!/bin/bash
-
-cd /setup
-
-# remove existing chaperone.d and startup.d from /apps so none linger
-rm -rf /apps; mkdir /apps
-
-# copy everything from setup to the root /apps
-echo copying application files to /apps ...
-tar cf - . | (cd /apps; tar xf -)
-
-# If there is an 100-install.sh executable script available in startup.d, then incorporate
-# it into our image build and comment them out so the next build documents, but does not
-# include them.
-
-if [ -x startup.d/100-install.sh ]; then
-  # Execute these
-  ./startup.d/100-install.sh BUILD
-  # Comment them out so the install file can be incrementally used again.
-  sed -r '/AFTER THIS LINE/,$ s/^[ \t]*[^# \t].*/#\0/' startup.d/100-install.sh >/apps/startup.d/100-install.sh
-fi
-
-# Add additional setup commands for your production image here, if any.  However, the best
-# way is to put things in 100-install.sh.
-# ...
-
-chown -R runapps: /apps    # for full-container execution
-
-rm -rf /setup
-QEOF
-chmod ugo+x $APPSDIR/build/install.sh
-fi
-
-if [ ! -f $APPSDIR/bash.bashrc ]; then
-cat >$APPSDIR/bash.bashrc <<'QEOF'
-# Bash start-up file, created by chaplocal
-
-export PROMPT_DIRTRIM=2
-cd $APPS_DIR
-
-echo ""
-echo "Now running inside container. Directory is: $APPS_DIR"
-echo ""
-
-if [ "$EXTERN_HOSTPORT" != "" -a "$HTTPD_SERVER_NAME" != "" ]; then
-  echo "The default '$HTTPD_SERVER_NAME' site is running at http://$EXTERN_HOSTPORT/"
-  echo ""
-fi
-
-QEOF
-fi
-
-if [ ! -f $APPSDIR/build.sh ]; then
-cat >$APPSDIR/build.sh <<EOF
-#!/bin/bash
-#Created by chaplocal on `date`
-# the cd trick assures this works even if the current directory is not current.
-cd \${0%/*}
-if [ "\$CHAP_SERVICE_NAME" != "" ]; then
-  echo You need to run build.sh on your docker host, not inside a container.
-  exit
-fi
-if [ \$# != 1 ]; then
-  echo "Usage: ./build.sh <production-image-name>"
-  exit 1
-fi
-prodimage="\$1"
-if [ ! -f build/Dockerfile ]; then
-  echo "Expecting to find Dockerfile in ./build ... not found!"
-  exit 1
-fi
-tar czh --exclude '*~' --exclude 'var/*' . | docker build -t \$prodimage -f build/Dockerfile -
-EOF
-chmod ugo+x $APPSDIR/build.sh
-fi
-
-if [ ! -f $APPSDIR/run.sh ]; then
-cat >$APPSDIR/run.sh <<EOF
-#!/bin/bash
-#Created by chaplocal on `date`
-
-IMAGE="$IMAGE"
-DOCKERHOST=\`hostname\`
-
-# Uncomment to hardcode ports for startup.  Command line still overrides.
-#PORTOPT="-p x:y -p x:y"
-
-usage() {
-  echo "Usage: run.sh [-d] [-p port#] [-h] [extra-chaperone-options]"
-  echo "       Run \$IMAGE as a daemon or interactively (the default)."
-  echo "       First available port will be remapped to \$DOCKERHOST if possible."
-  exit
-}
-
-cd \${0%/*} # go to directory of this file
-APPS=\$PWD
-cd ..
-
-options="-t -i -e TERM=\$TERM --rm=true"
-shellopt="/bin/bash --rcfile \$APPS/bash.bashrc"
-
-while getopts ":-dp:" o; do
-  case "\$o" in
-    d)
-      options="-d"
-      shellopt=""
-      ;;
-    p)
-      PORTOPT="-p \$OPTARG"
-      ;;      
-    -) # first long option terminates
-      break
-      ;;
-    *)
-      usage
-      ;;
-  esac
-done
-shift \$((OPTIND-1))
-
-# remap ports according to the image, and tell the container about the lowest numbered
-# port used.
-
-if [ "\$PORTOPT" == "" ]; then
-  exposed=\`docker inspect \$IMAGE | sed -ne 's/^ *"\([0-9]*\)\/tcp".*\$/\1/p' - | sort -u\`
-  if [ "\$exposed" != "" -a -x /bin/nc ]; then
-    PORTOPT=""
-    for PORT in \$exposed; do
-      if ! /bin/nc -z \$DOCKERHOST \$PORT; then
-	 [ "\$PORTOPT" == "" ] && PORTOPT="--env EXTERN_HOSTPORT=\$DOCKERHOST:\$PORT"
-         PORTOPT="\$PORTOPT -p \$PORT:\$PORT"
-	 echo "Port \$PORT available at \$DOCKERHOST:\$PORT ..."
-      fi
-    done
-  else
-    if [ "\$exposed" != "" ]; then
-      echo "Note: '/bin/nc' not installed, so cannot detect port usage on this system."
-      echo "      Use '\$0 -p x:y' to expose ports."
-    fi
-  fi
-fi
-
 # Extract our local UID/GID
-myuid=\`id -u\`
-mygid=\`id -g\`
-
-# Run the image with this directory as our local apps dir.
-# Create a user with uid=\$myuid inside the container so the mountpoint permissions
-# are correct.
-
-docker run \$options -v /home:/home \$PORTOPT \$IMAGE \\
-   --create \$USER/\$myuid --config \$APPS/chaperone.d \$* \$shellopt
-EOF
-chmod ugo+x $APPSDIR/run.sh
-fi
-
-}
+myuid=`id -u`
+mygid=`id -g`
 
 # Copy the boilerplate apps directory into this development directory where it can be
 # worked on easily.
 if [ ! -d $APPSDIR ]; then
     echo ""
     echo Extracting /apps default directory into $APPSDIR ...
-    docker run -i --rm=true -v /home:/home $IMAGE --disable --exitkills --log err --user root \
-	/bin/bash -c "cp -a /apps $APPSDIR; chown -R $myuid:$mygid $APPSDIR"
-    initapps
+    docker run -i --rm=true -v /home:/home $IMAGE \
+       --user root --config /apps/chaperone.d --task clone-apps $APPSDIR $myuid:$mygid
     echo "You can customize the contents of $APPSDIR to tailor it for your application,"
     echo "then use it as a template for your production image."
     echo ""

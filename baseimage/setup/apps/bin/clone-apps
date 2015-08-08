@@ -1,0 +1,50 @@
+#!/bin/bash
+# Used to clone the /apps hierarchy into a new develoment directory using
+# clone skeletons.
+
+DESTPATH="$1"
+UIDGID="$2"
+SKEL="$APPS_DIR/etc/skel"
+CLONESKEL="$SKEL/clone"
+
+if [ "$CHAP_TASK_MODE" != "1" ]; then
+  echo "'clone-apps' should only be run in chaperone --task mode from the docker host"
+  exit 1
+fi
+
+if [ "$DESTPATH" == "" -o "$UIDGID" == "" ]; then
+  echo 'Usage: clone-apps <destination-path> <uid>:<gid>'
+  exit
+fi
+
+if [ "${DESTPATH#/}" == "${DESTPATH}" ]; then
+  echo "Error: must be an absolute path, $DESTPATH"
+  exit 1
+fi
+
+if [ -e "$DESTPATH" ]; then
+  echo "Error: already exists, $DESTPATH"
+  exit 1
+fi
+
+# Clone the actual directory
+(cd $APPS_DIR; tar cf - --exclude ./var .) | (mkdir -p $DESTPATH; cd $DESTPATH; tar xf -)
+
+cd $CLONESKEL
+skelfiles=`find . -name '*.tpl'`
+cd $DESTPATH
+
+source $SKEL/shell_vars.inc
+
+for tpl in $skelfiles; do
+  tpl=${tpl#./}
+  tdir=$(dirname $tpl)
+  if [ "$tdir" != "." ]; then
+    mkdir -p $tdir
+  fi
+  if [ ! -f "${tpl%.tpl}" ]; then
+    tpl_envcp -a $CLONESKEL/$tpl ${tpl%.tpl}
+  fi
+done
+
+chown -R $UIDGID $DESTPATH
