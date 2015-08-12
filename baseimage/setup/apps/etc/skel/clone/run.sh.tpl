@@ -2,23 +2,23 @@
 #Developer's startup script
 #Created by chaplocal on %(`date`)
 
-usage() {
-  echo "Usage: run.sh [-d] [-p port#] [-h] [extra-chaperone-options]"
-  echo "       Run $IMAGE as a daemon or interactively (the default)."
-  echo "       First available port will be remapped to $DOCKERHOST if possible."
-  exit
-}
-
 IMAGE="%(PARENT_IMAGE)"
 INTERACTIVE_SHELL="/bin/bash"
 
 # Uncomment to include port settings
 #PORTOPT="-p x:y"
 
-EXT_HOSTNAME=$(hostname -f)
+EXT_HOSTNAME=localhost
 
 # Uncomment to hardcode ports for startup.  Command line still overrides.
 #PORTOPT="-p x:y -p x:y"
+
+usage() {
+  echo "Usage: run.sh [-d] [-p port#] [-h] [extra-chaperone-options]"
+  echo "       Run $IMAGE as a daemon or interactively (the default)."
+  echo "       First available port will be remapped to $EXT_HOSTNAME if possible."
+  exit
+}
 
 if [ "$CHAP_SERVICE_NAME" != "" ]; then
   echo run.sh should be executed on your docker host, not inside a container.
@@ -55,14 +55,15 @@ shift $((OPTIND-1))
 # port used.
 
 if [ "$PORTOPT" == "" ]; then
-  exposed=`docker inspect $IMAGE | sed -ne 's/^ *"\([0-9]*\)\/tcp".*$/\1/p' - | sort -u`
-  if [ "$exposed" != "" -a -x /bin/nc ]; then
+  exposed=`docker inspect $IMAGE | sed -ne 's/^ *"\([0-9]*\)\/tcp".*$/\1/p' | sort -u`
+  ncprog=`which nc`
+  if [ "$exposed" != "" -a "$ncprog" != "" ]; then
     PORTOPT=""
     for PORT in $exposed; do
-      if ! /bin/nc -z $DOCKERHOST $PORT; then
+      if ! $ncprog -z $EXT_HOSTNAME $PORT; then
 	 [ "$PORTOPT" == "" ] && PORTOPT="--env CONFIG_EXT_PORT=$PORT"
          PORTOPT="$PORTOPT -p $PORT:$PORT"
-	 echo "Port $PORT available at $DOCKERHOST:$PORT ..."
+	 echo "Port $PORT available at $EXT_HOSTNAME:$PORT ..."
       fi
     done
   else
@@ -73,13 +74,10 @@ if [ "$PORTOPT" == "" ]; then
   fi
 fi
 
-# Extract our local UID/GID
-myuid=`id -u`
-mygid=`id -g`
-
 # Run the image with this directory as our local apps dir.
-# Create a user with uid=$myuid inside the container so the mountpoint permissions
-# are correct.
+# Create a user with a uid/gid based upon the file permissions of the chaperone.d
+# directory.
 
-docker run $options -v /home:/home $PORTOPT --env CONFIG_EXT_HOSTNAME=$EXT_HOSTNAME $IMAGE \
-   --create $USER/$myuid --config $APPS/chaperone.d $* $shellopt
+MOUNT=${PWD#/}; MOUNT=/${MOUNT%%/*} # extract user mountpoint
+docker run $options -v $MOUNT:$MOUNT $PORTOPT --env CONFIG_EXT_HOSTNAME=$EXT_HOSTNAME $IMAGE \
+   --create $USER:$APPS/chaperone.d --config $APPS/chaperone.d $* $shellopt

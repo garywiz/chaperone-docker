@@ -3,7 +3,7 @@
 # for development or other purposes.
 
 DEFAULT_IMAGE="chapdev/chaperone-baseimage"
-VERSTR="chaplocal version 1.30"
+VERSTR="chaplocal version 1.31"
 
 if [ "$CHAP_SERVICE_NAME" != "" ]; then
    echo "The 'chaplocal' script is not intended to be run inside a container,"
@@ -47,10 +47,13 @@ APPSBASE="$1"
 LOCALROOT=$PWD
 
 APPSDIR=$LOCALROOT/$APPSBASE
+MOUNT=/home
 
-# Assure we're running in /home
-if [ "${PWD:0:6}" != "/home/" ]; then
-  echo "Sorry, this script is designed to operate only within the /home directory"
+# Assure we're running in /home or /Users
+if [ "${PWD:0:7}" == "/Users/" ]; then
+  MOUNT=/Users
+elif [ "${PWD:0:6}" != "/home/" ]; then
+  echo "Sorry, this script is designed to operate only within the /home or /Users directory"
   echo "of your host. :-("
   exit 1
 fi
@@ -77,7 +80,7 @@ mygid=`id -g`
 if [ ! -d $APPSDIR ]; then
     echo ""
     echo Extracting /apps default directory into $APPSDIR ...
-    docker run -i --rm=true -v /home:/home $IMAGE \
+    docker run -i --rm=true -v $MOUNT:$MOUNT $IMAGE \
        --user root --config /apps/chaperone.d --task clone-apps $APPSDIR $myuid:$mygid
     echo "You can customize the contents of $APPSDIR to tailor it for your application,"
     echo "then use it as a template for your production image."

@@ -8,7 +8,7 @@ all build rebuild test:
 
 clean:
 	for sf in $(TARGETS); do (cd $$sf; $(MAKE) $@) || break; done
-	rm -rf `find . -name '*~'` test_logs
+	rm -rf `find . -name '*~'` `find . -name '_temp_' -type d` test_logs
 
 push:   test
 	for sf in $(TARGETS); do docker push chapdev/chaperone-$$sf; done

@@ -20,6 +20,9 @@ cont_setup_file="/container_setup.done"
 export CONTAINER_INIT=0
 export VAR_INIT=0
 
+# Assure anything lingering that might interfere with restart is gone
+rm -rf /tmp/*.pid /tmp/*.sock
+
 if [ ! -f $cont_setup_file ]; then
     dolog "initializing container for the first time"
     CONTAINER_INIT=1

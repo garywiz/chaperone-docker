@@ -10,13 +10,12 @@ INTERACTIVE_SHELL="/bin/bash"
 # Uncomment to include port settings
 #PORTOPT="-p x:y"
 
-EXT_HOSTNAME=%(CONFIG_EXT_HOSTNAME:-$(hostname -f))
+EXT_HOSTNAME=%(CONFIG_EXT_HOSTNAME:-localhost)
 
 # If this directory exists and is writable, then it will be used
 # as attached storage
 STORAGE_LOCATION="$PWD/baseimage-storage"
 STORAGE_USER="$USER"
-STORAGE_UID=`id -u`
 
 # The rest should be OK...
 
@@ -31,7 +30,7 @@ fi
 
 if [ "$STORAGE_LOCATION" != "" -a -d "$STORAGE_LOCATION" -a -w "$STORAGE_LOCATION" ]; then
   docker_opt="$docker_opt -v $STORAGE_LOCATION:/apps/var"
-  chap_opt="--create $STORAGE_USER/$STORAGE_UID"
+  chap_opt="--create $STORAGE_USER:/apps/var"
   echo Using attached storage at $STORAGE_LOCATION
 fi
 
