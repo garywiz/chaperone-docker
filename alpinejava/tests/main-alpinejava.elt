@@ -1,0 +1,36 @@
+#!/usr/bin/env expect-test-image
+
+~../../include/general.elt
+
+; Check for Java installation
+>echo $JAVA_HOME
+</usr/lib/jvm/java
+>java -version
+<OpenJDK Runtime Environment
+<64-Bit Server VM
+
+; Check to be sure all processes are running
+>ps ax
+<00 \[chaperone\] /bin/bash
+<00 /bin/bash
+<00 ps ax
+
+; Ask telchap if things are sane
+>telchap status
+< CONSOLE .+ running 
+< logrotate\.service +false +disabled
+< sample\.service +true +started
+< startup\.service +true +started
+
+; Try stopping the sample service
+>telchap reset sample
+<services reset
+
+; Now restart it
+>telchap start sample
+<service start-up queued
+<Your container is running as 'runapps'
+
+; Force-stop the console
+>telchap stop CONSOLE
+<CONSOLE terminated abnormally

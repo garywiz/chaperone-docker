@@ -1,0 +1,36 @@
+#!/usr/bin/env expect-test-command
+
+@5
+
+# Test get-help command
+
+>TASK get-help
+<for Image: chapdev/chaperone-alpinejava
+<Take a look at the configuration files
+
+# And get-launcher.  See if we can run using the launcher.
+
+>TASK get-launcher | sh
+<Extracting run-alpinejava
+>./run-alpinejava.sh
+<NOTE: This is output from /apps/sample_app
+<Your container is running as 'runapps'
+>exit
+>rm run-alpinejava.sh
+
+# Now use get-chaplocal to set up a dev environment and see if it's
+# running properly.
+
+>TASK get-chaplocal | sh
+<is ready to use
+<the image 'chapdev/chaperone-alpinejava' will be used
+>./chaplocal cltest
+<Extracting /apps default directory
+</alpinejava/tests/_temp_/cltest to tailor it for your application
+<Executing run.sh
+<NOTE: This is output from
+<Now running inside container
+>ls -l
+<build.sh
+<run.sh
+>exit
