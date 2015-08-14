@@ -41,6 +41,11 @@ passwd -d root
 # Create default /apps directory
 cp -a /setup-baseimage/apps /
 
+# Create aliases in /usr/local/bin for Chaperone programs.
+
+cp -a /usr/bin/chaperone /usr/bin/telchap /usr/bin/envcp /usr/bin/sdnotify \
+     /usr/local/bin
+
 # Set up runapps user
 
 addgroup -g 901 runapps

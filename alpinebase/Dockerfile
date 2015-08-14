@@ -12,4 +12,4 @@ RUN /setup-baseimage/install.sh
 #		  The _ prefix keeps these from polluting our environment.
 
 ENV _CHAP_OPTIONS="--config apps/chaperone.d --default-home / --user runapps" _PARENT_IMAGE="chapdev/chaperone-alpinebase"
-ENTRYPOINT ["/usr/bin/chaperone"]
+ENTRYPOINT ["/usr/local/bin/chaperone"]
