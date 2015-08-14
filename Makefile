@@ -1,4 +1,4 @@
-TARGETS=baseimage apache lamp lemp alpinebase
+TARGETS=baseimage apache lamp lemp alpinebase alpinejava
 SHELL=/bin/bash
 
 .PHONY: all build rebuild clean push push-only test
