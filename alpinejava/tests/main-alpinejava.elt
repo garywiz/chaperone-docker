@@ -6,7 +6,7 @@
 >echo $JAVA_HOME
 </usr/lib/jvm/java
 >java -version
-<OpenJDK Runtime Environment
+<SE Runtime Environment
 <64-Bit Server VM
 
 ; Check to be sure all processes are running

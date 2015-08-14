@@ -47,9 +47,9 @@ addgroup -g 901 runapps
 adduser -G runapps -u 901 -H -h / -D runapps
 chown -R runapps: /apps
 
-# Do other cleanups
+# Do final cleanups
 rm -rf /setup-baseimage
-rm -rf /tmp/* /var/tmp/*
+rm -rf /tmp/* /var/tmp/* /var/cache/apk/*
 rm -f `find /apps -name '*~'`
 
 echo done.

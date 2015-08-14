@@ -13,7 +13,7 @@
 >TASK get-launcher | sh
 <Extracting run-alpinejava
 >./run-alpinejava.sh
-<NOTE: This is output from /apps/sample_app
+<NOTE: This is output from /apps/java_sample/
 <Your container is running as 'runapps'
 >exit
 >rm run-alpinejava.sh

@@ -1,6 +1,6 @@
-# Ubuntu Docker images which use the Chaperone process manager
+# Ubuntu and Alpine Docker images which use the Chaperone process manager
 
-This repository is used to build two base-iamges which use the
+This repository is used to build several base-iamges which use the
 [Chaperone](http://garywiz.github.io/chaperone/guide/chap-intro.html) lightweight process manager.
 
 Several images are included:
@@ -14,10 +14,12 @@ Several images are included:
  * chaperone-apache (An Apache-only image, managed by Chaperone.  On
    [Docker Hub as chaperone-lemp](https://registry.hub.docker.com/u/chapdev/chaperone-apache).
  * chaperone-alpinebase (A 55MB Alpine Linux image including Python3, managed by Chaperone.  On
-   [Docker Hub as chaperone-lemp](https://registry.hub.docker.com/u/chapdev/chaperone-alpinebase).
+   [Docker Hub as chaperone-alpinebase](https://registry.hub.docker.com/u/chapdev/chaperone-alpinebase).
+ * chaperone-alpinejava (A 210MB Alpine image containing Oracle Java 8 and Python3, managed by Chaperone. On
+   [Docker Hub as chaperone-alpinejava](https://registry.hub.docker.com/u/chapdev/chaperone-alpinejava).
    
-Chaperone is a lightweight process manager specifically designed as an ENTRYPOINT for Docker containers that runs as PID 1.  As a single
-controlling process, it provides:
+Chaperone is a lightweight process manager specifically designed as an ENTRYPOINT for Docker containers that runs as PID 1.
+As a single controlling process, it provides:
 
   * Dependency based [parallel start-up of services](http://garywiz.github.io/chaperone/ref/config-service.html).
   * [Built in syslog implementation](http://garywiz.github.io/chaperone/ref/config-logging.html), which listens on /dev/log and allows
@@ -38,13 +40,13 @@ for production.  *Please* [submit issues](https://github.com/garywiz/chaperone-d
 
 ## Try it out
 
-To get a quick idea of how things work, try the LAMP image and create your own userspace development directory.
-It's best if you do this *as a normal user* that is a member of the docker group, since that will give you a good
-idea of how the userspace development model works.
+All of these images work the same way.  To get a quick idea of how things work, try the LAMP image and create your own 
+userspace development directory.  It's best if you do this *as a normal user* that is a member of the docker group, since 
+that will give you a good idea of how the userspace development model works.
 
 First, get the `chaplocal` script, a quick script which allows you to create userspace development "home directories":
 
-    docker run -i --rm=true chapdev/chaperone-lamp --task get-chaplocal | sh
+    docker run -i --rm chapdev/chaperone-lamp --task get-chaplocal | sh
 
 You now have a script in your current directory called ``chaplocal``.
 Use it to create a new LAMP development directory:
@@ -60,6 +62,11 @@ and package them in an image which will run your application.
 You can also see a quick overview of the services running by going to the sample site at http://localhost:8080
 (where localhost is whatever you've called your docker host machine).
 
+Images also support a `get-help` feature so you can find out about the version you have, for example
+you can simply say:
+
+    docker run -i --rm chapdev/chaperone-alpinejava --task get-help
+       
 We still have more work to do on these images, and feedback would be great.  This approach
 has solved a lot of problems for us.
 
