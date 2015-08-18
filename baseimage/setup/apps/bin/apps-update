@@ -1,0 +1,321 @@
+#!/usr/bin/python3
+# -*- mode: python -*-
+
+"""
+Update an older apps directory with newly changed files.
+
+Usage: apps-update <source-dir> <destination-dir>
+
+This is a utility to simplify the process of updating an existing development
+directory with new features and changes from the distribution images.  Typically
+you run this from inside the container, like this (assuming your home directory
+is /home):
+
+   # In your local apps directory...
+   docker run -i -t --rm -v /home:/home chapdev/chaperone-lamp \
+       --config $PWD/chaperone.d --task /bin/bash
+   garyw@47de5d3ad4d6:~$ /apps/bin/apps-update /apps $APPS_DIR
+
+You'll then be prompted for a variety of options, including the ability to
+omit directories and view diffs on files which have changed.
+
+Although intended for the above, this is quite generic and can be used
+for any directory-to-directory update task.
+
+"""
+
+import os
+import re
+import difflib
+import shutil
+import signal
+from docopt import docopt
+
+options = docopt(__doc__)
+
+def ask(prompt, evalfunc = lambda x: x, error = None):
+    result = None
+    while result is None:
+        result = input(prompt + " ")
+        try:
+            result = evalfunc(result)
+        except Exception as ex:
+            print("Try again. (" + (error or str(ex)) + ")")
+            result = None
+    return result
+
+def yorn(prompt):
+    def check(x):
+        x = x.upper()
+        if "YES".startswith(x):
+            return True
+        if "NO".startswith(x):
+            return False
+        raise Exception("Must answer 'Yes' or 'No'")
+    return ask(prompt, check)
+
+def getintlist(txt, maxval = None, minval = 1):
+    if not txt:
+        return list()
+    vals = re.split('[\s,]', txt)
+    result = [int(v) for v in vals]
+    for r in result:
+        if ((minval is not None and r < minval) or 
+            (maxval is not None and r > maxval)):
+            raise Exception("'{0}' is out of range".format(r))
+    return result
+
+MSG_HELP = """For each destination file:
+Diffs - show the differences (will be saved in <file>.diffs automatically)
+Copy  - copy the file to the destination, overwriting it
+Keep  - keep the existing file (.diffs are still created)
+Help/?- this message"""
+
+def do_copy_or_edit(src, dest, files, diffs):
+    results = list()
+
+    # Start with the list of files which have no changes
+    nodiffs = [f for f in files if f not in diffs]
+
+    print("There are {0.value} {0.name} with no differences.".format(pluralint(len(nodiffs), 'file')))
+
+    def opteval(v):
+        if len(v) == 0:
+            raise Exception("no default")
+        v=v.upper()
+        if any(k.startswith(v)
+               for k in ('DIFFS', 'COPY', 'KEEP', 'HELP', '?')):
+            return v[0]
+        raise Exception("Not a valid option")
+
+    if diffs:
+        print("\nThese are the common files with differences...")
+
+        for f,diff in diffs.items():
+            option = 'X'
+            while option not in 'CK':
+                option = ask("\n{0}:\n  Diffs/Copy/Keep/Help? ".format(os.path.join(dest, f)), opteval)
+                if option in '?H':
+                    print(MSG_HELP)
+                elif option == 'D':
+                    diff.print()
+                elif option in 'CK':
+                    if option == 'K':
+                        diff.operation = 'diff'
+                    results.append(diff)
+
+    return results
+
+
+class FileBase:
+    
+    def __init__(self, fn, dir1, dir2):
+        self.basis = fn
+        self.fromname = os.path.join(dir1, fn)
+        self.toname = os.path.join(dir2, fn)
+        self.init()
+    def init(self):
+        pass
+
+class FileOpCopy(FileBase):
+
+    operation = "copy"
+
+    def preview(self):
+        if self.operation == 'copy':
+            print("COPY: {0} to {1}".format(self.fromname, self.toname))
+        else:
+            print("PRESERVE: {0}".format(self.toname))
+
+    def apply(self):
+        if self.operation != 'copy':
+            return
+        print("copying {0} to {1}".format(self.fromname, self.toname))
+        os.makedirs(os.path.dirname(self.toname), exist_ok=True)
+        shutil.copy2(self.fromname, self.toname)
+
+class FileOpDiff(FileOpCopy):
+    
+    diffs = None
+
+    @classmethod
+    def create_diffs(cls, files, dir1, dir2):
+        results = dict()
+        for f in files:
+            d = cls(f, dir1, dir2)
+            if d.any_changes:
+                results[f] = d
+        return results
+
+    @property
+    def any_changes(self):
+        return bool(self.diffs)
+
+    def init(self):
+        self.diff_file = self.toname + ".diffs"
+        self.compare()
+
+    def print(self):
+        if not self.diffs:
+            print("{0}: no differences".format(self.basis))
+            return
+        print("".join(self.diffs))
+
+    def compare(self):
+        self.diffs = list(difflib.context_diff(open(self.fromname).readlines(),
+                                               open(self.toname).readlines(),
+                                               self.fromname, self.toname))
+
+    def preview(self):
+        super().preview()
+        print("  with differences in '{0}'".format(self.diff_file))
+
+    def apply(self):
+        super().apply()
+        print("creating {0}".format(self.diff_file))
+        f = open(self.diff_file, 'w')
+        f.write(''.join(self.diffs))
+        f.close()
+            
+class pluralint:
+
+    @property
+    def name(self):
+        if self.value == 1:
+            return self.singular
+        if self.plural:
+            return self.plural
+        if self.singular.endswith('y'):
+            return self.singular[:-1] + 'ies'
+        if self.singular.endswith('s'):
+            return self.singular + 'es'
+        return self.singular + 's'
+
+    def __init__(self, value, name, name_plural = None):
+        self.value = value
+        self.singular = name
+        self.plural = name_plural
+    
+class FileTree:
+
+    _rootpath = None
+
+    def __init__(self, rootpath):
+        self._rootpath = rootpath
+        self.build_tree()
+      
+    def _makepath(self, path, base):
+        return os.path.relpath(os.path.join(path, base), self._rootpath)
+
+    def build_tree(self):
+        flist = self._flist = set()
+        dlist = self._dlist = set()
+        for root, dirs, files in os.walk(self._rootpath):
+            for f in files:
+                flist.add(self._makepath(root, f))
+            for f in dirs:
+                dlist.add(self._makepath(root, f));
+
+    def common_with(self, other):
+        return sorted(self._flist.intersection(other._flist))
+
+    def new_files_in_known_dirs(self, other, omitdirs = list()):
+        newfiles = self._flist.difference(other._flist)
+        return sorted(f for f in newfiles if any(f.startswith(d) for d in self._dlist) 
+                      and not any(f.startswith(d) for d in omitdirs))
+
+    def new_dirs(self, other):
+        return sorted(self._dlist.difference(other._dlist))
+
+    def dump(self):
+        for d in self._dlist:
+            print("D", d)
+        for f in self._flist:
+            print("F", f)
+
+srcdir = options['<source-dir>']
+destdir = options['<destination-dir>']
+
+srcapps = FileTree(srcdir)
+destapps = FileTree(destdir)
+
+common_files = srcapps.common_with(destapps)
+new_dirs = srcapps.new_dirs(destapps)
+
+def int_handler(signum, frame):
+    print("\n^C.\nExiting. NO changes have been made to '{0}'.".format(destdir))
+    exit(0)
+
+signal.signal(signal.SIGINT, int_handler)
+
+print("In {0} ...".format(srcdir))
+
+omitdirs = list()
+
+if new_dirs:
+    print("There are {0.value} new {0.name}.".format(pluralint(len(new_dirs), 'directory')))
+    for i in range(len(new_dirs)):
+        print("  {0}. {1}".format(i+1, new_dirs[i]))
+    nv = ask("Which directories should NOT be included in the update?", lambda v: getintlist(v, len(new_dirs)+1))
+    if nv:
+        omitdirs = [new_dirs[n-1] for n in nv]
+
+new_files = srcapps.new_files_in_known_dirs(destapps, omitdirs)
+
+if new_files:
+    print("There are {0.value} new files {0.name} not present in {1}".format(pluralint(len(new_files), 'file'), destdir))
+    option = ask("(A)ll (N)one (C)hoose?", lambda v: v[0].upper() in 'ANC' and v[0].upper())
+    if option == 'N':
+        new_files = list()
+    elif option == 'C':
+        nv = True
+        while nv:
+            for i in range(len(new_files)):
+                print("  {0}. {1}".format(i+1, new_files[i]))
+            nv = ask("Which files should NOT be included in the update (Enter to stop choosing)\n?",
+                     lambda v: getintlist(v, len(new_files)+1))
+            if nv:
+                new_files = [new_files[i] for i in range(len(new_files)) if i+1 not in nv]
+    print("{0.value} new {0.name} will be copied to {1}".format(pluralint(len(new_files), 'file'), destdir))
+
+new_ops = [FileOpCopy(f, srcdir, destdir) for f in new_files]
+
+if common_files:
+    common_diffs = FileOpDiff.create_diffs(common_files, srcdir, destdir)
+    print("There are {0.value} {0.name} in common between {1} and {2}. ({3.value} {3.name} identical)".
+          format(pluralint(len(common_files), 'file'), destdir, srcdir, 
+                 pluralint(len(common_files) - len(common_diffs), 'is', 'are')))
+    option = ask("(A)ll (N)one (C)hoose?", lambda v: v[0].upper() in 'ANC' and v[0].upper())
+    if option == 'N':
+        common_ops = list()
+    elif option == 'C':
+        common_ops = do_copy_or_edit(srcdir, destdir, common_files, common_diffs)
+    else:
+        common_ops = common_diffs.values()
+
+if not new_ops and not common_ops:
+    print("There are no operations to perform.")
+    exit(0)
+
+print("\nNothing has been done so far.  Before proceeding, let's be sure...")
+
+if new_ops:
+    print("\nThese are the new files that don't exist...")
+    for f in new_ops:
+        f.preview()
+
+if common_ops:
+    print("\nThis is what we'll do with common files...")
+    for f in common_ops:
+        f.preview()
+
+option = yorn("\nWould you like to apply ALL the above changes?")
+
+if not option:
+    print("No changes will be applied.")
+    exit(0)
+
+for f in new_ops:
+    f.apply()
+for f in common_ops:
+    f.apply()

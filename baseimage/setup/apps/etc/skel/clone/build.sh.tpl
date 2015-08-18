@@ -1,5 +1,5 @@
 #!/bin/bash
-#Created by chaplocal on `date`
+#Created by chaplocal on %(`date`)
 # the cd trick assures this works even if the current directory is not current.
 cd ${0%/*}
 if [ "$CHAP_SERVICE_NAME" != "" ]; then

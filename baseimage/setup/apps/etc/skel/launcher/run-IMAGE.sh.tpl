@@ -14,7 +14,7 @@ EXT_HOSTNAME=%(CONFIG_EXT_HOSTNAME:-localhost)
 
 # If this directory exists and is writable, then it will be used
 # as attached storage
-STORAGE_LOCATION="$PWD/baseimage-storage"
+STORAGE_LOCATION="$PWD/%(IMAGE_BASENAME)-storage"
 STORAGE_USER="$USER"
 
 # The rest should be OK...

@@ -22,7 +22,7 @@ PORTOPT="-p $EXT_HTTP_PORT:8080 -p $EXT_HTTPS_PORT:8443"
 
 # If this directory exists and is writable, then it will be used
 # as attached storage
-STORAGE_LOCATION="$PWD/apache-storage"
+STORAGE_LOCATION="$PWD/%(IMAGE_BASENAME)-storage"
 STORAGE_USER="$USER"
 
 # The rest should be OK...

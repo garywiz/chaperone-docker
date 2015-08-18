@@ -1,12 +1,14 @@
 #!/bin/bash
 
-# This script makes it easy to build "derivative containers" which have additional
-# requirements installed.  Skip down to the bottom, where you can see examples of
-# what to do.
+# This script makes it to tweak the container at start-up, and additionally
+# at image build time.
 #
 # These additional installs will be applied BOTH when you execute your container
 # for the first time, as well as when you build a new derivative container 
 # using ../build.sh.
+
+# REMOVE THIS to enable this script.
+exit
 
 # No need to change the following.... head down below...
 

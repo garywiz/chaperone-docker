@@ -24,4 +24,7 @@ fi
 # way is to put things in 100-install.sh.
 # ...
 
+# Clean up and assure permissions are correct
+
+rm -rf /setup
 chown -R runapps: /apps    # for full-container execution
