@@ -5,7 +5,11 @@ source $APPS_DIR/etc/version.inc
 export IMAGE_VERSION IMAGE_ARCH
 
 # The image name, without the prefix.
-export IMAGE_BASENAME=${PARENT_IMAGE/*chapdev\/chaperone-/}
+if [[ "$PARENT_IMAGE" == chapdev/* ]]; then
+  export IMAGE_BASENAME=${PARENT_IMAGE/*chapdev\/chaperone-/}  # standard chapdev family naming
+else
+  export IMAGE_BASENAME=${PARENT_IMAGE#*/}                     # others just strip off username
+fi
 
 # The name of the default launcher (this is what run-IMAGE.sh.tpl gets delivered as)
 export DEFAULT_LAUNCHER=run-$IMAGE_BASENAME.sh

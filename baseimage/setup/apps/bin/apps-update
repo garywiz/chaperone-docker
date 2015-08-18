@@ -13,6 +13,7 @@ is /home):
 
    # In your local apps directory...
    docker run -i -t --rm -v /home:/home chapdev/chaperone-lamp \
+       --create-user yourname:$PWD/chaperone.d \
        --config $PWD/chaperone.d --task /bin/bash
    garyw@47de5d3ad4d6:~$ /apps/bin/apps-update /apps $APPS_DIR
 
