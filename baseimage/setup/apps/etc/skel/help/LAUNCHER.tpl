@@ -1,5 +1,5 @@
 
-The run-baseimage.sh script is a quick-start for launching
+The %(DEFAULT_LAUNCHER) script is a quick-start for launching
 containers from the %(PARENT_IMAGE) image.
 
 To get this message again:

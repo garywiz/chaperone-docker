@@ -6,7 +6,7 @@
 # We publish two variables for use in startup scripts:
 #
 #   CONTAINER_INIT=1   if we are initializing the container for the first time
-#   VAR_INIT=1        if we are initializing the $VAR_DIR for the first time
+#   VAR_INIT=1         if we are initializing the $VAR_DIR for the first time
 #
 # Both may be relevant, since it's possible that the $VAR_DIR may be on a mount point
 # so it can be reused when starting up containers which refer to it.

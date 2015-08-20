@@ -15,7 +15,7 @@ function dolog() { logger -t startup.sh -p info $*; }
 function critlog() { logger -t startup.sh -p crit $*; }
 
 var_setup_file="$VAR_DIR/run/var_setup.done"
-cont_startup_file="/container_setup.done"
+cont_setup_file="/container_setup.done"
 
 export CONTAINER_INIT=0
 export VAR_INIT=0
@@ -23,10 +23,10 @@ export VAR_INIT=0
 # Assure anything lingering that might interfere with restart is gone
 rm -rf /tmp/*.pid /tmp/*.sock
 
-if [ ! -f $cont_startup_file ]; then
+if [ ! -f $cont_setup_file ]; then
     dolog "initializing container for the first time"
     CONTAINER_INIT=1
-    sudo bash -c "date >$cont_startup_file"
+    sudo bash -c "date >$cont_setup_file"
 fi
 
 if [ ! -f $var_setup_file ]; then
@@ -43,7 +43,7 @@ if [ ! -f $var_setup_file ]; then
 fi
 
 if [ -d $APPS_DIR/startup.d ]; then
-  for sf in $( find $APPS_DIR/startup.d -type f -perm +100 \! -name '*~' ); do
+  for sf in $( find $APPS_DIR/startup.d -type f -perm +100 \! -name '*~' | sort ); do
     dolog "running $sf..."
     $sf
   done
