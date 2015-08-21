@@ -1,6 +1,6 @@
-include ../include/make.inc
+BASENAME = chaperone-apache
 
-IMAGE_NAME = chaperone-apache
+include ../include/make.inc
 
 clean:
 	rm -rf `find . -name '*~'`

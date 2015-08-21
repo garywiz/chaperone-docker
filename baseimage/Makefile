@@ -1,6 +1,6 @@
-include ../include/make.inc
+BASENAME = chaperone-baseimage
 
-IMAGE_NAME = chaperone-baseimage
+include ../include/make.inc
 
 .PHONY: binaries
 

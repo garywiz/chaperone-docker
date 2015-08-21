@@ -1,4 +1,4 @@
-IMAGE_NAME = chaperone-alpinebase
+BASENAME = chaperone-alpinebase
 
 include ../include/make.inc
 

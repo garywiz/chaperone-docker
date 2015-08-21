@@ -4,7 +4,4 @@ FROM chapdev/chaperone-alpinebase:latest
 ADD setup/ /setup-alpinejava/
 RUN /setup-alpinejava/install.sh
 
-# Note underscore
-ENV _PARENT_IMAGE="chapdev/chaperone-alpinejava"
-
 ENTRYPOINT ["/usr/local/bin/chaperone"]

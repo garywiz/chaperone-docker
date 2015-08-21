@@ -5,16 +5,22 @@ export TOPLEV_DIR := $(subst /include/make.inc,,$(this_file))
 # so it contains nothing fancy.
 include $(TOPLEV_DIR)/include/version.inc
 
-NAME = $(IMAGE_NAMESPACE)/$(IMAGE_NAME)
+FULLNAME = chapdev/$(BASENAME)
 VERSION = $(IMAGE_VERSION)-$(IMAGE_ARCH)
 
 this_file := $(abspath $(lastword $(MAKEFILE_LIST)))
 PATH := $(TOPLEV_DIR)/bin:$(PATH)
 
-DOCKER_BUILD=tar czh . | docker build -t $(NAME):$(VERSION) --rm -; docker tag -f $(NAME):$(VERSION) $(NAME):latest
-DOCKER_REBUILD=tar czh . | docker build -t $(NAME):$(VERSION) --no-cache=true --rm -; docker tag -f $(NAME):$(VERSION) $(NAME):latest
+DOCKER_BUILD=\
+     echo "IMAGE_NAME=$(FULLNAME)" | cat $(TOPLEV_DIR)/include/version.inc - >setup/this_version.inc; \
+     tar czh . | docker build -t $(FULLNAME):$(VERSION) --rm -; docker tag -f $(FULLNAME):$(VERSION) $(FULLNAME):latest; \
+     rm setup/this_version.inc
+DOCKER_REBUILD=\
+     echo "IMAGE_NAME=$(FULLNAME)" | cat $(TOPLEV_DIR)/include/version.inc - >setup/this_version.inc; \
+     tar czh . | docker build -t $(FULLNAME):$(VERSION) --no-cache=true --rm -; docker tag -f $(FULLNAME):$(VERSION) $(FULLNAME):latest; \
+     rm setup/this_version.inc
 
-RUN_TESTS=test-driver tests $(IMAGE_NAME) $(TOPLEV_DIR)/test_logs
+RUN_TESTS=test-driver tests $(BASENAME) $(TOPLEV_DIR)/test_logs
 
 .PHONY: all build test
 

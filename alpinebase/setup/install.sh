@@ -40,6 +40,7 @@ passwd -d root
 
 # Create default /apps directory
 cp -a /setup-baseimage/apps /
+cp /setup-baseimage/this_version.inc /apps/etc/version.inc
 
 # Create aliases in /usr/local/bin for Chaperone programs.
 

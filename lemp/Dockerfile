@@ -4,7 +4,4 @@ FROM chapdev/chaperone-baseimage:latest
 ADD setup/ /setup-lemp/
 RUN /setup-lemp/install.sh
 
-# Note underscore
-ENV _PARENT_IMAGE="chapdev/chaperone-lemp"
-
 EXPOSE 8080 8443

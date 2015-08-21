@@ -19,6 +19,7 @@ apt-get update
 
 # Copy new apps files into /apps
 cp -av /setup-lamp/apps/* /apps
+mv /setup-lamp/this_version.inc /apps/etc/version.inc
 chown -R runapps: /apps
 
 # Remove sample application from chaperone.d

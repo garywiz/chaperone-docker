@@ -1,3 +1,3 @@
-IMAGE_NAME = chaperone-alpinejava
+BASENAME = chaperone-alpinejava
 
 include ../include/make.inc

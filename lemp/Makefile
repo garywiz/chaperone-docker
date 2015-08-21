@@ -1,6 +1,6 @@
-include ../include/make.inc
+BASENAME = chaperone-lemp
 
-IMAGE_NAME = chaperone-lemp
+include ../include/make.inc
 
 clean:
 	rm -rf `find . -name '*~'`

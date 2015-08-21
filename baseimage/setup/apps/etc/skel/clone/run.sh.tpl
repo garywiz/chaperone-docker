@@ -5,9 +5,6 @@
 IMAGE="%(PARENT_IMAGE)"
 INTERACTIVE_SHELL="/bin/bash"
 
-# Uncomment to include port settings
-#PORTOPT="-p x:y"
-
 EXT_HOSTNAME=localhost
 
 # Uncomment to hardcode ports for startup.  Command line still overrides.

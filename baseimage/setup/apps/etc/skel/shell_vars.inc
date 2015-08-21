@@ -3,6 +3,7 @@
 
 source $APPS_DIR/etc/version.inc
 export IMAGE_VERSION IMAGE_ARCH
+export PARENT_IMAGE=$IMAGE_NAME
 
 # The image name, without the prefix.
 if [[ "$PARENT_IMAGE" == chapdev/* ]]; then

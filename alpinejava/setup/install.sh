@@ -81,6 +81,7 @@ apk del ca-certificates
 
 # Copy new apps files into /apps
 cp -av /setup-alpinejava/apps/* /apps
+mv /setup-alpinejava/this_version.inc /apps/etc/version.inc
 chown -R runapps: /apps
 
 # Remove scripted sample app

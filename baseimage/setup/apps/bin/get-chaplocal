@@ -9,10 +9,12 @@ if [ "$CHAP_TASK_MODE" != "1" ]; then
   exit 1
 fi
 
-if [ "$PARENT_IMAGE" == "" ]; then
+source $APPS_DIR/etc/version.inc
+
+if [ "$IMAGE_NAME" == "" ]; then
     script_text=`cat $APPS_DIR/bin/chaplocal`
 else
-    script_text=`sed "s|chapdev/chaperone-baseimage|$PARENT_IMAGE|" $APPS_DIR/bin/chaplocal`
+    script_text=`sed "s|chapdev/chaperone-baseimage|$IMAGE_NAME|" $APPS_DIR/bin/chaplocal`
 fi
 
 

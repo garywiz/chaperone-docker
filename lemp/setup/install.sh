@@ -21,6 +21,7 @@ apt-get update
 
 # Copy new apps files into /apps
 cp -av /setup-lemp/apps/* /apps
+mv /setup-lemp/this_version.inc /apps/etc/version.inc
 chown -R runapps: /apps
 
 # Remove sample application from chaperone.d

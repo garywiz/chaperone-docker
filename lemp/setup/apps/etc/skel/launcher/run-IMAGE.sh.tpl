@@ -7,7 +7,7 @@
 IMAGE="%(PARENT_IMAGE)"
 INTERACTIVE_SHELL="/bin/bash"
 
-# You can specify the external host and ports for Apache here.  These variables
+# You can specify the external host and ports for Nginx here.  These variables
 # are also passed into the container so that any application code which does redirects
 # can use these if need be.
 

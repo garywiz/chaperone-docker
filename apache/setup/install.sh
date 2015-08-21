@@ -19,6 +19,7 @@ apt-get update
 
 # Copy new apps files into /apps
 cp -av /setup-apache/apps/* /apps
+mv /setup-apache/this_version.inc /apps/etc/version.inc
 chown -R runapps: /apps
 
 # Remove sample application and irrelevant templates

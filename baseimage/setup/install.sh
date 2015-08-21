@@ -88,8 +88,9 @@ cp /setup-baseimage/dot.bashrc /root/.bashrc
 passwd -d root
 sed -i 's/nullok_secure/nullok/' /etc/pam.d/common-auth
 
-# Create default /apps directory
+# Create default /apps directory and version file
 cp -a /setup-baseimage/apps /
+cp /setup-baseimage/this_version.inc /apps/etc/version.inc
 
 # Set up runapps user
 

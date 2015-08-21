@@ -4,7 +4,4 @@ FROM chapdev/chaperone-baseimage:latest
 ADD setup/ /setup-lamp/
 RUN /setup-lamp/install.sh
 
-# Note underscore
-ENV _PARENT_IMAGE="chapdev/chaperone-lamp"
-
 EXPOSE 8080 8443
