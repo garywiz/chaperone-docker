@@ -6,7 +6,6 @@
 >fgrep startup.sh /apps/var/log/syslog.log 
 <initializing container for the first time
 <initializing /apps/var for the first time
-<running.*100-install
 <running.*150-ssl-setup
 
 >ps axw

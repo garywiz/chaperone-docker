@@ -163,9 +163,6 @@ function highlight($instr, $words) {
 		    and copying files if needed.  For example, one of the scripts in
 		    this directory creates and initializes the MySQL database directory
 		    in <tt><?php echo $vardir; ?>/mysql</tt>.  
-		    <p>
-		    If you want to install additional features when the container starts
-		    (and when you build a derivative image), then see <tt>100-install.sh</tt>.
 		  </div>
 		</div>
 	      </div>
