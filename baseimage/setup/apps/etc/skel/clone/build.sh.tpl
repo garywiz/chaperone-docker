@@ -26,7 +26,7 @@ if [ ! -f build/Dockerfile ]; then
 fi
 
 # Update the image information for the new build
-sed "s/^IMAGE_NAME=.*/IMAGE_NAME=$prodimage/" <etc/version.inc >build/new_version.inc
+sed "s/^IMAGE_NAME=.*/IMAGE_NAME=${prodimage/\//\\\/}/" <etc/version.inc >build/new_version.inc
 
 # Do the build
 tar czh --exclude '*~' --exclude 'var/*' . | docker build -t $prodimage -f build/Dockerfile -
