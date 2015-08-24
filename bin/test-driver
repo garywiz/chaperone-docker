@@ -37,7 +37,7 @@ mkdir -p $LOGDIR
       echo "TEST FAILED: $IMAGE_NAME $sf (see $(relpath $LOGFILE.err $TOPLEV_DIR))"
       exitcode=2
     fi
-    cd $TESTDIR; rm -rf $TMPDIR
+    cd $TESTDIR; [ ! -f keep.tempdir ] && rm -rf $TMPDIR
   done
   if [ $exitcode == 0 ]; then
       echo "Tests passed for $IMAGE_NAME"

@@ -29,11 +29,14 @@ cd ..
 options="-t -i -e TERM=$TERM --rm=true"
 shellopt="/bin/bash --rcfile $APPS/bash.bashrc"
 
-while getopts ":-dp:" o; do
+while getopts ":-dp:n:" o; do
   case "$o" in
     d)
       options="-d"
       shellopt=""
+      ;;
+    n)
+      options="$options --name $OPTARG"
       ;;
     p)
       PORTOPT="-p $OPTARG"
