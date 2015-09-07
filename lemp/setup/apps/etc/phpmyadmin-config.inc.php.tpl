@@ -1,0 +1,1 @@
+../../../../lamp/setup/apps/etc/phpmyadmin-config.inc.php.tpl

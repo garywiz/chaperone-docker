@@ -1,3 +1,13 @@
+## 1.0.8 (2015-09-07)
+
+Improvements:
+- Better run.sh templates for LAMP, LEMP, and Apache images.
+- Better error reporting when startup scripts fail.
+
+Bug Fixes:
+
+- Fixed `phpmyadmin` so that it redirects according to external hostname and port configurations.  This was a bit finicky, since `phpmyadmin` is somewhat over-zealous at trying to detect the incoming URLs.
+
 ## 1.0.7 (2015-08-21)
 
 Improvements:

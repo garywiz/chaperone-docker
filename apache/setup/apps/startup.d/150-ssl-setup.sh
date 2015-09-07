@@ -37,9 +37,8 @@ if [ "$CONFIG_EXT_SSL_HOSTNAME" != "" ]; then
     # Enable apache SSL...
     # If this FAILS it is probably because (a) SECURE_ROOT was set to true and
     # (b) the SSL hostname was added after the apps directory was already initailized.
-    if [ "$HTTP_SERVER_NAME" == 'apache' ]; then
+    if [ "$HTTPD_SERVER_NAME" == 'apache' -a "$CONFIG_EXT_SSL_HOSTNAME" != "" ]; then
       sudo a2enmod ssl
     fi
 
 fi
-
