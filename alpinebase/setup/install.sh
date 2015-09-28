@@ -6,6 +6,8 @@
 # open up all sudo commands to all users.  See apps/etc/startup.sh.  If SECURE_ROOT is set, then
 # startup will lock down root after the container is initialized and running.
 
+. /setup-baseimage/buildenv.inc
+
 echo "ALL ALL=NOPASSWD: ALL" >>/etc/sudoers    
 
 # Install prebuilt binaries
@@ -13,7 +15,7 @@ echo "ALL ALL=NOPASSWD: ALL" >>/etc/sudoers
 
 # Install pip and chaperone
 apk add --update musl python3 bash sudo
-pip3 install chaperone
+$BUILD_CHAPERONE_INSTALL # normally 'pip3 install chaperone' located in buildenv.inc
 
 # get rid of annoying color prompts (some people must like this, but on some color schemes,
 # things are unreadable).

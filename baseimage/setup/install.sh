@@ -3,6 +3,8 @@
 # Preamble derived from the prepare.sh script from https://github.com/phusion/baseimage-docker.
 # Thank you, phusion, for all the lessons learned.
 
+. /setup-baseimage/buildenv.inc
+
 export LC_ALL=C
 export DEBIAN_FRONTEND=noninteractive
 
@@ -67,7 +69,7 @@ do_apt_install nano curl less vim psmisc gettext
 
 # Install pip and chaperone
 do_apt_install python3-pip
-pip3 install chaperone
+$BUILD_CHAPERONE_INSTALL # normally 'pip3 install chaperone' located in buildenv.inc
 
 # Now, just so there is no confusion, create a new, empty /var/log directory so that any logs
 # written will obviously be written by the current container software.  Keep the old one so
