@@ -1,6 +1,6 @@
 #!/usr/bin/env expect-test-image
 
-~../../include/general.elt
+~$EL_include_dir/general.elt
 
 ; Check to be sure all processes are running
 >ps ax
@@ -8,6 +8,8 @@
 <00 /bin/bash
 <00 ps ax
 
+; Allow environment to settle so process notifications complete
+>sleep 1
 ; Ask telchap if things are sane
 >telchap status
 < CONSOLE .+ running 

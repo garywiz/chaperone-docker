@@ -14,7 +14,12 @@ cd ${0%/*}/..
 absdir=$PWD
 echo $absdir
 
-docker run -i -v $absdir/setup:/setup --rm=true ubuntu:14.04 <<EOF
+zflag=$(sestatus 2>/dev/null | fgrep -q enabled && echo :z)
+docker run -i -v $absdir/setup:/setup$zflag --rm=true ubuntu:14.04 /bin/bash <<"EOF"
+
+# Obtain UID of the mounted volume so we don't copy as root
+uid=`ls -l / | awk '/setup$/{print $3}'`
+useradd -u $uid usetup
 
 # Use a proxy if we have one
 /setup/apt_setproxy on
@@ -28,11 +33,9 @@ mkdir /build
 git clone https://github.com/dvarrazzo/py-setproctitle.git
 cd py-setproctitle
 python3 setup.py bdist
-mkdir /setup/lib
 
 echo Copy them to our shared mount bin...
 cd dist
-cp -v setproctitle-*.gz /setup/lib/setproctitle-install.tar.gz
-chown -R --reference /setup/create-binaries.sh /setup/lib
+su usetup -c 'mkdir -p /setup/lib; cp -v setproctitle-*.gz /setup/lib/setproctitle-install.tar.gz'
 
 EOF

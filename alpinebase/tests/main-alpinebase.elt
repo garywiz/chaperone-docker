@@ -1,6 +1,6 @@
 #!/usr/bin/env expect-test-image
 
-~../../include/general.elt
+~$EL_include_dir/general.elt
 
 ; Check to be sure all processes are running
 >ps ax

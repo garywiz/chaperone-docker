@@ -43,7 +43,8 @@ docker_opt="$docker_opt \
 [ "$EXT_SSL_HOSTNAME" != "" ] && docker_opt="$docker_opt -e CONFIG_EXT_SSL_HOSTNAME=$EXT_SSL_HOSTNAME"
 
 if [ "$STORAGE_LOCATION" != "" -a -d "$STORAGE_LOCATION" -a -w "$STORAGE_LOCATION" ]; then
-  docker_opt="$docker_opt -v $STORAGE_LOCATION:/apps/var"
+  SELINUX_FLAG=$(sestatus 2>/dev/null | fgrep -q enabled && echo :z)
+  docker_opt="$docker_opt -v $STORAGE_LOCATION:/apps/var$SELINUX_FLAG"
   chap_opt="--create $STORAGE_USER:/apps/var"
   echo Using attached storage at $STORAGE_LOCATION
 fi

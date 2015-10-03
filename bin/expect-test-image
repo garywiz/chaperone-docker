@@ -1,4 +1,5 @@
 #!/bin/bash
 
 export EL_SHELL="expect-lite-run"
+export EL_include_dir="$TOPLEV_DIR/include"
 exec expect-lite $1

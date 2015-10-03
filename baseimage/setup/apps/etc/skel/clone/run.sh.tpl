@@ -56,7 +56,7 @@ shift $((OPTIND-1))
 
 if [ "$PORTOPT" == "" ]; then
   exposed=`docker inspect $IMAGE | sed -ne 's/^ *"\([0-9]*\)\/tcp".*$/\1/p' | sort -u`
-  ncprog=`which nc`
+  ncprog=`which nc 2>/dev/null`
   if [ "$exposed" != "" -a "$ncprog" != "" ]; then
     PORTOPT=""
     for PORT in $exposed; do
@@ -79,5 +79,7 @@ fi
 # directory.
 
 MOUNT=${PWD#/}; MOUNT=/${MOUNT%%/*} # extract user mountpoint
-docker run $options -v $MOUNT:$MOUNT $PORTOPT --env CONFIG_EXT_HOSTNAME=$EXT_HOSTNAME $IMAGE \
+SELINUX_FLAG=$(sestatus 2>/dev/null | fgrep -q enabled && echo :z)
+
+docker run $options -v $MOUNT:$MOUNT$SELINUX_FLAG $PORTOPT --env CONFIG_EXT_HOSTNAME=$EXT_HOSTNAME $IMAGE \
    --create $USER:$APPS/chaperone.d --config $APPS/chaperone.d $* $shellopt

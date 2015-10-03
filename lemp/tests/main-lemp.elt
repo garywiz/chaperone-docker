@@ -1,6 +1,6 @@
 #!/usr/bin/env expect-test-image
 
-~../../include/general.elt
+~$EL_include_dir/general.elt
 
 >fgrep startup.sh /apps/var/log/syslog.log 
 <initializing container for the first time

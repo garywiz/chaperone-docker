@@ -23,8 +23,10 @@ if [ "${DESTPATH#/}" == "${DESTPATH}" ]; then
 fi
 
 if [ -e "$DESTPATH" ]; then
-  echo "Error: already exists, $DESTPATH"
-  exit 1
+  if [ "$(ls $DESTPATH)" != "" ]; then
+    echo "Error: already exists and is not empty, $DESTPATH"
+    exit 1
+  fi
 fi
 
 # Clone the actual directory
