@@ -6,8 +6,8 @@
 # Install Java requirements
 
 JAVA_VERSION=8
-JAVA_UPDATE=51
-JAVA_BUILD=16
+JAVA_UPDATE=60
+JAVA_BUILD=27
 JAVA_HOME=/usr/lib/jvm/java${JAVA_VERSION}-u${JAVA_UPDATE}b${JAVA_BUILD}
 
 TMP=/setup-alpinejava/tmp
