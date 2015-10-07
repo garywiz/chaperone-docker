@@ -1,0 +1,25 @@
+<html>
+<body>
+
+<style type="text/css">
+body {
+  background: black;
+  color: #00CC00;
+  margin: 10px;
+}
+.pslist {
+  font: 10px courier;
+  white-space: pre;
+}
+</style>
+
+<tt>Container Processes</tt>
+  
+<pre class="pslist">
+<?php 
+ echo shell_exec("ps");
+?>
+</pre>
+
+</body>
+</html>
