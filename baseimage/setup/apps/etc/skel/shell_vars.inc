@@ -9,7 +9,7 @@ export PARENT_IMAGE=$IMAGE_NAME
 if [[ "$PARENT_IMAGE" == chapdev/* ]]; then
   # Standard chapdev naming.  Remove chapdev/chaperone- or just chapdev/
   IMAGE_BASENAME=${PARENT_IMAGE/*chapdev\/chaperone-/}
-  export IMAGE_BASENAME=${PARENT_IMAGE/*chapdev\//}
+  export IMAGE_BASENAME=${IMAGE_BASENAME/*chapdev\//}
 else
   export IMAGE_BASENAME=${PARENT_IMAGE#*/}                     # others just strip off username
 fi
