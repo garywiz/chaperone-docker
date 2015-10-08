@@ -1,0 +1,56 @@
+#!/usr/bin/env expect-test-command
+
+@5
+
+# First use get-chaplocal to set up a new development environment
+
+>TASK get-chaplocal | sh
+<is ready to use
+<the image 'chapdev/chaperone-centosbase' will be used
+>./chaplocal inetd
+<Extracting /apps default directory
+</centosbase/tests/_temp_/inetd to tailor it for your application
+<Executing run.sh
+<NOTE: This is output from
+<Now running inside container
+>ls -l
+<build.sh
+<run.sh
+>exit
+
+# Now, create a new interactive script that we can run with inetd, and
+# add the script to start it
+
+>cd inetd; ./run.sh
+>cat >echotest
+>>#!/usr/bin/python3
+>>import sys
+>>for line in sys.stdin:
+>>  if "EXIT" in line:
+>>    exit(0)
+>>  print("Echoing: ", line)
+>>  sys.stdout.flush()
+>>^D
+>chmod 755 echotest
+>echo 'inetd_test.service: { type: inetd, port: 9876, command: "$(APPS_DIR)/echotest" }' >chaperone.d/inetd.conf
+>exit
+>./run.sh
+<This is output from
+>telchap status
+<waiting on port 9876
+>exit
+<Request made to kill
+
+# inetd service is set up and running, now we can actually test the service itself
+>./run.sh -d -n inetd-test-container -p 9876:9876
+>sleep 3; telnet localhost 9876
+>>Now is the time for all good men
+<Echoing:  Now is the time
+>>AGAIN
+<Echoing:  AGAIN
+>>EXIT
+<Connection closed
+>docker stop inetd-test-container
+<inetd-test-container
+>docker rm -v inetd-test-container
+<inetd-test-container
