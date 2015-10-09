@@ -67,7 +67,7 @@ chown -R runapps: /apps
 
 # Do final cleanups
 cd /
-yum clean
+yum clean all
 rm -rf /setup-baseimage
 rm -rf /tmp/* /var/tmp/*
 rm -f `find /apps -name '*~'`
