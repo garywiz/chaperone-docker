@@ -1,4 +1,4 @@
-TARGETS=baseimage apache lamp lemp alpinebase alpinejava alpine-nginx-php
+TARGETS=baseimage apache lamp lemp alpinebase alpinejava alpine-nginx-php centosbase
 SHELL=/bin/bash
 
 .PHONY: all build rebuild clean push push-only test
