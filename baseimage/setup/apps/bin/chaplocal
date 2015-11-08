@@ -62,11 +62,13 @@ if [[ "$IMAGE" != *":"* ]]; then
   IMAGE=$IMAGE:latest
 fi
 
-if [ "`docker inspect $IMAGE >/dev/null 2>&1 && echo yes`" != "yes" ]; then
+DOCKER_CMD=$(docker version >/dev/null 2>&1 && echo docker || echo 'sudo docker')
+
+if [ "`$DOCKER_CMD inspect $IMAGE >/dev/null 2>&1 && echo yes`" != "yes" ]; then
   echo ""
   echo Cannot find local docker image: $IMAGE
   echo ""
-  echo You may want to pull the image with \"docker pull $IMAGE\" 
+  echo You may want to pull the image with \"$DOCKER_CMD pull $IMAGE\" 
   echo and then try again.
   exit 1
 fi
@@ -82,7 +84,7 @@ if [ ! -d $APPSDIR ]; then
     echo Extracting /apps default directory into $APPSDIR ...
     mkdir $APPSDIR
     SELINUX_FLAG=$(sestatus 2>/dev/null | fgrep -q enabled && echo :z)
-    docker run -i --rm=true -v $APPSDIR:/appsdir$SELINUX_FLAG $IMAGE \
+    $DOCKER_CMD run -i --rm=true -v $APPSDIR:/appsdir$SELINUX_FLAG $IMAGE \
        --user root --config /apps/chaperone.d --task clone-apps /appsdir $myuid:$mygid
     echo "You can customize the contents of $APPSDIR to tailor it for your application,"
     echo "then use it as a template for your production image."

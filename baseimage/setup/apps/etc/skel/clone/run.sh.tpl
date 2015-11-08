@@ -54,8 +54,10 @@ shift $((OPTIND-1))
 # remap ports according to the image, and tell the container about the lowest numbered
 # port used.
 
+DOCKER_CMD=$(docker version >/dev/null 2>&1 && echo docker || echo 'sudo docker')
+
 if [ "$PORTOPT" == "" ]; then
-  exposed=`docker inspect $IMAGE | sed -ne 's/^ *"\([0-9]*\)\/tcp".*$/\1/p' | sort -u`
+  exposed=`$DOCKER_CMD inspect $IMAGE | sed -ne 's/^ *"\([0-9]*\)\/tcp".*$/\1/p' | sort -u`
   ncprog=`which nc 2>/dev/null`
   if [ "$exposed" != "" -a "$ncprog" != "" ]; then
     PORTOPT=""
@@ -81,5 +83,5 @@ fi
 MOUNT=${PWD#/}; MOUNT=/${MOUNT%%/*} # extract user mountpoint
 SELINUX_FLAG=$(sestatus 2>/dev/null | fgrep -q enabled && echo :z)
 
-docker run $options -v $MOUNT:$MOUNT$SELINUX_FLAG $PORTOPT --env CONFIG_EXT_HOSTNAME=$EXT_HOSTNAME $IMAGE \
+$DOCKER_CMD run $options -v $MOUNT:$MOUNT$SELINUX_FLAG $PORTOPT --env CONFIG_EXT_HOSTNAME=$EXT_HOSTNAME $IMAGE \
    --create $USER:$APPS/chaperone.d --config $APPS/chaperone.d $* $shellopt

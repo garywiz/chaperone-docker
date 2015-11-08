@@ -7,7 +7,7 @@ to continue development.
 
 To make a complete, ready-to-go image, you should do the following:
 
-1.  Customize Dockerfile in this directory.
+1.  Customize Dockerfile in the application root directory (our parent)
 
 2.  Customize install.sh by adding any additional build commands.
 

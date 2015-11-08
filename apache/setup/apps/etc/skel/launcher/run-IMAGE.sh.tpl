@@ -49,4 +49,7 @@ if [ "$STORAGE_LOCATION" != "" -a -d "$STORAGE_LOCATION" -a -w "$STORAGE_LOCATIO
   echo Using attached storage at $STORAGE_LOCATION
 fi
 
-docker run $docker_opt $IMAGE $chap_opt $* $INTERACTIVE_SHELL
+# Determine if we need to use 'sudo'
+DOCKER_CMD=$(docker version >/dev/null 2>&1 && echo docker || echo 'sudo docker')
+
+$DOCKER_CMD run $docker_opt $IMAGE $chap_opt $* $INTERACTIVE_SHELL

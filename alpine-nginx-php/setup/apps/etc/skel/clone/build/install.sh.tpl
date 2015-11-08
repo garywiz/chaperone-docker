@@ -9,8 +9,8 @@ rm -rf /apps; mkdir /apps
 echo copying application files to /apps ...
 tar cf - --exclude ./build --exclude ./build.sh --exclude ./run.sh . | (cd /apps; tar xf -)
 
-# update the version information
-mv /setup/build/new_version.inc /apps/etc/version.inc
+# Update the version information, if a replacement exists
+[ -f /setup/build/new_version.inc ] && mv /setup/build/new_version.inc /apps/etc/version.inc
 
 # PHP EXTENSIONS!
 #
