@@ -5,10 +5,13 @@ function relpath() { python -c "import os; print(os.path.relpath('$1', '$2' or o
 
 TESTDIR=$(readlink -f $1)
 TMPDIR=$TESTDIR/_temp_
-IMAGE_NAME=$2
-LOGDIR=$3
+IMAGE_NAMESPACE=$2
+IMAGE_NAME=$3
+LOGDIR=$4
 LOGFILE=$LOGDIR/$IMAGE_NAME.log
-export EL_TEST_IMAGE=chapdev/$IMAGE_NAME
+
+export EL_TEST_IMAGE=$IMAGE_NAMESPACE/$IMAGE_NAME
+export EL_TEST_NAMESPACE=$IMAGE_NAMESPACE
 
 if [ ! -d $TESTDIR ]; then
    exit

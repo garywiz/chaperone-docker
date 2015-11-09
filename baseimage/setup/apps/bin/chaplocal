@@ -3,7 +3,7 @@
 # for development or other purposes.
 
 DEFAULT_IMAGE="chapdev/chaperone-baseimage"
-VERSTR="chaplocal version 1.31"
+VERSTR="chaplocal version 1.40"
 
 if [ "$CHAP_SERVICE_NAME" != "" ]; then
    echo "The 'chaplocal' script is not intended to be run inside a container,"

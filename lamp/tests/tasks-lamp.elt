@@ -1,7 +1,7 @@
 #!/usr/bin/env expect-test-command
 
 >TASK get-help
-<for Image: chapdev/chaperone-lamp
+<for Image: $EL_TEST_NAMESPACE/chaperone-lamp
 <there will be a default sample site
 >TASK get-launcher | sh
 <The run-lamp.sh script is a quick-start for launching

@@ -1,7 +1,7 @@
 #!/usr/bin/env expect-test-command
 
 >TASK get-help
-<for Image: chapdev/chaperone-apache
+<for Image: $EL_TEST_NAMESPACE/chaperone-apache
 <there will be a default sample site
 >TASK get-launcher | sh
 <The run-apache.sh script is a quick-start for launching

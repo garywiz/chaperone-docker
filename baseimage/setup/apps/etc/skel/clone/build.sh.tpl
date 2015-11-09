@@ -15,7 +15,7 @@ if [ "$CHAP_SERVICE_NAME" != "" ]; then
 fi
 
 # Uncomment to default to your new derivative image name...
-#prodimage="%(PARENT_IMAGE:|chapdev/*|%(PARENT_IMAGE:/^chapdev/mylocal/)|%(PARENT_IMAGE))"
+#prodimage="%(PARENT_IMAGE:|%(IMAGE_NAMESPACE)/*|%(PARENT_IMAGE:/^%(IMAGE_NAMESPACE)/mylocal/)|%(PARENT_IMAGE))"
 
 [ "$1" != "" ] && prodimage="$1"
 

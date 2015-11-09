@@ -2,14 +2,14 @@
 # available in templates.  See bin/get-help and bin/get-launcher.
 
 source $APPS_DIR/etc/version.inc
-export IMAGE_VERSION IMAGE_ARCH
+export IMAGE_VERSION IMAGE_ARCH IMAGE_NAMESPACE
 export PARENT_IMAGE=$IMAGE_NAME
 
 # The image name, without the prefix.
-if [[ "$PARENT_IMAGE" == chapdev/* ]]; then
-  # Standard chapdev naming.  Remove chapdev/chaperone- or just chapdev/
-  IMAGE_BASENAME=${PARENT_IMAGE/*chapdev\/chaperone-/}
-  export IMAGE_BASENAME=${IMAGE_BASENAME/*chapdev\//}
+if [[ "$PARENT_IMAGE" == $IMAGE_NAMESPACE/* ]]; then
+  # Standard namespace naming.  Remove namespace/chaperone- or just namespace/
+  IMAGE_BASENAME=${PARENT_IMAGE/*$IMAGE_NAMESPACE\/chaperone-/}
+  export IMAGE_BASENAME=${IMAGE_BASENAME/*$IMAGE_NAMESPACE\//}
 else
   export IMAGE_BASENAME=${PARENT_IMAGE#*/}                     # others just strip off username
 fi

@@ -6,7 +6,7 @@
 
 >TASK get-chaplocal | sh
 <is ready to use
-<the image 'chapdev/chaperone-centosbase' will be used
+<the image '$EL_TEST_NAMESPACE/chaperone-centosbase' will be used
 >./chaplocal inetd
 <Extracting /apps default directory
 </centosbase/tests/_temp_/inetd to tailor it for your application

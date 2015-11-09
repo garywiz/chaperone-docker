@@ -5,7 +5,7 @@ if [ "$CHAP_SERVICE_NAME" != "" ]; then
 fi
 
 if [ "$CHAP_TASK_MODE" != "1" ]; then
-  echo "get-chaplocal' should only be run in chaperone --task mode from the docker host"
+  echo "get-launcher' should only be run in chaperone --task mode from the docker host"
   exit 1
 fi
 

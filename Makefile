@@ -1,3 +1,5 @@
+include include/version.inc
+
 TARGETS=baseimage apache lamp lemp alpinebase alpinejava alpine-nginx-php centosbase
 SHELL=/bin/bash
 
@@ -11,7 +13,7 @@ clean:
 	rm -rf `find . -name '*~'` `find . -name '_temp_' -type d` test_logs
 
 push:   test
-	for sf in $(TARGETS); do docker push chapdev/chaperone-$$sf; done
+	for sf in $(TARGETS); do docker push $(IMAGE_NAMESPACE)/chaperone-$$sf; done
 
 push-only:
-	for sf in $(TARGETS); do docker push chapdev/chaperone-$$sf; done
+	for sf in $(TARGETS); do docker push $(IMAGE_NAMESPACE)/chaperone-$$sf; done

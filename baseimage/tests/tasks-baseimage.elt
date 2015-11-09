@@ -5,7 +5,7 @@
 # Test get-help command
 
 >TASK get-help
-<for Image: chapdev/chaperone-baseimage
+<for Image: $EL_TEST_NAMESPACE/chaperone-baseimage
 <Take a look at the configuration files
 
 # And get-launcher.  See if we can run using the launcher.
@@ -22,7 +22,7 @@
 
 >TASK get-chaplocal | sh
 <is ready to use
-<the image 'chapdev/chaperone-baseimage' will be used
+<the image '$EL_TEST_NAMESPACE/chaperone-baseimage' will be used
 >./chaplocal cltest
 <Extracting /apps default directory
 </baseimage/tests/_temp_/cltest to tailor it for your application
