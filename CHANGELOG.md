@@ -1,6 +1,18 @@
+## 1.0.13 (2015-11-11)
+
+Improvements:
+
+- When using `chaplocal` to create development directories, the `Dockerfile` is now stored in the root apps folder, and designed to be used with Docker automated builds.
+- All features will now use `sudo` to run the `docker` command if the user is not a member of the `docker` group.
+- Added `alpine-nginx-php` image.
+- Added `centosbase` image.
+- Updated `chaperone-alpinejava` to Oracle 8 Update 60, Build 27.
+- Now works properly with SELinux-enabled systems by changing contexts when needed.
+
 ## 1.0.8 (2015-09-07)
 
 Improvements:
+
 - Better run.sh templates for LAMP, LEMP, and Apache images.
 - Better error reporting when startup scripts fail.
 

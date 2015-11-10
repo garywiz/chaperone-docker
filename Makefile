@@ -1,6 +1,15 @@
 include include/version.inc
 
-TARGETS=baseimage apache lamp lemp alpinebase alpinejava alpine-nginx-php centosbase
+# targets1 are all prefixed with the namespace/chaperone-
+targets1=baseimage apache lamp lemp alpinebase alpinejava centosbase
+
+# targets2 are just prefixed with namespace/
+targets2=alpine-nginx-php
+
+TARGETS=$(targets1) $(targets2)
+DHREPOS=$(foreach name,$(targets1),$(IMAGE_NAMESPACE)/chaperone-$(name)) \
+	$(foreach name,$(targets2),$(IMAGE_NAMESPACE)/$(name))
+
 SHELL=/bin/bash
 
 .PHONY: all build rebuild clean push push-only test
@@ -13,7 +22,7 @@ clean:
 	rm -rf `find . -name '*~'` `find . -name '_temp_' -type d` test_logs
 
 push:   test
-	for sf in $(TARGETS); do docker push $(IMAGE_NAMESPACE)/chaperone-$$sf; done
+	for sf in $(DHREPOS); do docker push $$sf; done
 
 push-only:
-	for sf in $(TARGETS); do docker push $(IMAGE_NAMESPACE)/chaperone-$$sf; done
+	for sf in $(DHREPOS); do echo docker push $$sf; done
