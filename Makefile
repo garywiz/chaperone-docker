@@ -25,4 +25,4 @@ push:   test
 	for sf in $(DHREPOS); do docker push $$sf; done
 
 push-only:
-	for sf in $(DHREPOS); do echo docker push $$sf; done
+	for sf in $(DHREPOS); do docker push $$sf; done
