@@ -1,0 +1,1 @@
+../../../../alpine-nginx-php/setup/apps/etc/start_nginx.sh

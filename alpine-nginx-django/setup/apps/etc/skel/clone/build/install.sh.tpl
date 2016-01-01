@@ -12,21 +12,16 @@ tar cf - --exclude ./build --exclude ./build.sh --exclude ./run.sh . | (cd /apps
 # Update the version information, if a replacement exists
 [ -f /setup/build/new_version.inc ] && mv /setup/build/new_version.inc /apps/etc/version.inc
 
-# PHP EXTENSIONS!
+# Django Extensions
 #
-# Add any php extensions your application needs.  Alpine Linux is VERY granular and
-# does not contain the large number of extensions you'd expect in a Ubuntu/Debian/CentOS
-# install.  You can find the package names here...
+# This build uses Python3, so you'll need to install any Django extensions from PyPi using
+# the pip3 command.  You may also need to add additional Alpine linux packages, listed here:
 # https://pkgs.alpinelinux.org/packages?name=php-%25&repo=all&arch=x86_64&maintainer=all
 
 ## Uncomment and customize...
-# apk --update add \
-#     php-json \
-#     php-ctype \
-#     php-gd \
-#     php-curl \
-#     php-openssl \
-#     php-zip
+# pip3 install django-registration ...
+# ...
+# apk --update add xxx
 
 # Add additional setup commands for your production image here, if any.
 # ...

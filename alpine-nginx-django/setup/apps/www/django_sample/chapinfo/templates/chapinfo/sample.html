@@ -1,0 +1,194 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ container }} - Home</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    
+    <link rel="stylesheet" type="text/css" href="{% static "chapinfo/css/style.css" %}" />
+    <link href='http://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,700,400italic,700italic&subset=latin,latin-ext' rel='stylesheet' type='text/css' />
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,700,400italic,700italic&subset=latin,latin-ext' rel='stylesheet' type='text/css' />
+
+  </head>
+  <body class="landing-page  wsite-theme-light  wsite-page-index"><div class="top-background">
+      <div id="header-wrap">
+	<div class="container">
+	  <td class="search"></td>
+	</div><!-- end container -->
+      </div><!-- end header-wrap -->
+      
+      <div id="nav-wrap">
+	<div class="container header-align-outer">
+	  <div class="header-align-mid">
+	    <div class="header-align-inner">
+	      <div class="built-with">
+		  <img style="height:25px;vertical-align:middle" src="{% static "chapinfo/images/chaplogo-150627.svg" %}"/>&nbsp;<span style="vertical-align:middle">Built with Chaperone + Docker</span>
+	      </div>
+	      <div id="logo"><span class="wsite-logo">
+		  <a href="">
+		    <span id="wsite-title">{{ container }}</span>
+		  </a>
+		</span>
+		<div class="nav-spacer"></div>
+		<div class="nav-container">
+		  <ul class="wsite-menu-default">
+		    <li class="wsite-menu-item-wrap">
+		      <a href="index.html" class="wsite-menu-item">
+			Default Site Home
+		      </a>
+		    </li>
+		    <li id="active" class="wsite-menu-item-wrap">
+		      <a href="sample.html" class="wsite-menu-item">
+			Django Sample
+		      </a>
+		    </li>
+		    <li class="wsite-menu-item-wrap">
+		      <a href="about.html" class="wsite-menu-item">
+			About Chaperone
+		      </a>
+		    </li>
+		    <li class="wsite-menu-item-wrap">
+		      <a href="resources.html" class="wsite-menu-item">
+			Resources
+		      </a>
+		    </li>
+		  </ul>
+		</div>
+	      </div><!-- end header align inner -->
+	    </div><!-- end header align mid -->
+	  </div><!-- end container -->	
+	</div><!-- end top background -->
+
+	<div id="banner-wrap" class="wsite-background">
+	  <div class="container">
+	    <div id="banner">
+	      
+	      <div id="banner-insert">
+		<a href="/admin/"><img style="vertical-align:middle;align:right;border:2px solid rgb(202,0,0)" src="{% static "chapinfo/images/django_admin.png" %}"/></a>
+	      </div>
+	      
+	      <div id="bannerright" class="landing-banner-outer">
+		<div class="landing-banner-mid">
+		  <div class="landing-banner-inner">
+		    <h2><span class="wsite-text wsite-headline">
+			Built with Django
+		    </span></h2>
+		    <div class="wsite-text wsite-headline-paragraph paragraph">
+			These pages are built and served with Django using 
+			<a href="https://uwsgi-docs.readthedocs.org/en/latest/tutorials/Django_and_nginx.html">uWSGI</a>.
+			The standard Django Polls app (<a href="https://docs.djangoproject.com/en/1.9/intro/tutorial01/">documented
+			here</a>) has been included, and you can use the Django admin interface right 
+			to add questions and choices:
+			<ul>
+			  <li><a href="/polls/">Run the polls app</a>
+			  <li><a href="/admin/">Run the Django Admin</a> interface ('admin' with password 'ChangeMe')
+			<ul>
+		    </div>
+		    <div class="paragraph">More information about how Django is configured follows.</div>
+		  </div><!-- end banner inner -->
+		</div><!-- end banner mid -->
+	      </div><!-- end banner-right -->
+	      
+	      <div style="clear:both;"></div>
+	      
+	    </div><!-- end banner -->
+	  </div><!-- end container -->
+	</div><!-- end banner-wrap -->
+	
+	<div id="main-wrap">
+	  <div class="container">
+	    <div id='wsite-content' class='wsite-elements wsite-not-footer'>
+	      <h2 class="wsite-content-title" style="text-align:left;">How to Use This Container ...</h2>
+
+{% if  development_mode %}
+	      <div class="paragraph" style="text-align:left;">
+		Your container seems to be running in development mode.  In this mode,
+		the container infrastructure is "wrapped" around your development files,
+		which are currently located in <tt>{{ env.APPS_DIR }}</tt>.
+	      </div>
+{% else %}
+	      <div class="paragraph" style="text-align:left;">
+		This container seems to be running in "production mode" where the application is
+		fully contained within the container.  This is great for a deployed app,
+		but if you want to customize the environment, and add your own app, you'll
+		want to create a "development directory" on your local host like this:
+	      </div>
+	      
+	      <pre class="premain">
+$ docker run -i chapdev/alpine-nginx-django --task get-chaplocal | sh
+... creates a 'chaplocal' script in the current directory ...
+$ ./chaplocal workdir
+... builds a development directory in 'workdir' and starts a shell ...
+bash-4.3$
+	      </pre>
+
+	      <div class="paragraph" style="text-align:left;">
+		Once you done that, the container then "wraps" your development directory and the 
+		container will retain all the infrastructure while all your app development
+		can be done in your host directory, under your own account.
+	      </div>
+{% endif %}
+	      <div class="paragraph" style="text-align:left;">
+		During development, you can just work directly on your Docker host while the container
+		provides the infrastructure. &nbsp;Later, you can bundle it all in a production container which
+		is either fully self-contained or designed to to be ephemeral and work with other persistent
+		containers or services.<br />
+	      </div>
+	      <div class="paragraph" style="text-align:left;">
+		You'll find all the application-specific configuration and source files in <tt>{{ env.APPS_DIR }}/www</tt>:<br />
+	      </div>
+	      <pre class="premain">$ cd {{ env.APPS_DIR }}/www<br/>{{ ls_output|safe }}</pre>
+	      <br/>
+	      A few things to know:<br />
+
+	      <div class="paragraph" style="text-align:left;">
+		<div class="dirlist">
+		  <div class="dirlist-name">django_sample</div>
+		  <div class="dirlist-item">
+		    This is the complete app you're looking at now.   This is where all the static
+		    files as well as source code are stored.  However, if you look at the settings,
+		    you'll see that the database and media directories are stored in the
+		    <tt>VAR_DIR</tt> directory (currently <tt>{{ env.VAR_DIR }}</tt>).  This makes it
+		    possible to run the container and have the app stored inside the container
+		    while data is stored on external storage.
+		  </div>
+		</div>
+	      </div>
+
+	      <div class="paragraph" style="text-align:left;">
+		<div class="dirlist">
+		  <div class="dirlist-name">sites.d</div>
+		  <div class="dirlist-item">
+		    All of the Nginx configuration files are stored here, and are automatically
+		    read by the Nginx webserver when it starts.
+		  </div>
+		</div>
+	      </div>
+
+	      <div class="paragraph" style="text-align:left;">
+		<div class="dirlist">
+		  <div class="dirlist-name">uwsgi.d</div>
+		  <div class="dirlist-item">
+		    This directory contains the uWSGI start-up scripts.  Generally
+		    there will be one script set up here for each application defined.
+		    Since it rare that anyone will create multiple applications inside
+		    a Docker container, it's likely you'll just be able to modify
+		    the existing files to suit your purposes without adding any additional ones.
+		  </div>
+		</div>
+	      </div>
+
+	  </div><!-- end container -->
+	</div><!-- end main-wrap -->
+
+	<div id="footer-wrap">
+	  <div class="container">
+	    See the <a href="resources.html">Resources</a> page for more information.
+	  </div><!-- end container -->
+	</div><!-- end footer-wrap -->
+
+      </div>
+    </div>      
+  </body>
+</html>

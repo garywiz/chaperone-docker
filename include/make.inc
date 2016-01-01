@@ -15,13 +15,13 @@ DOCKER_BUILD=\
      echo "IMAGE_NAME=$(FULLNAME)" | cat $(TOPLEV_DIR)/include/version.inc - >setup/this_version.inc; \
      [ -f Dockerfile.tpl ] && sed "s|FROM chapdev/|FROM $(IMAGE_NAMESPACE)/|" <Dockerfile.tpl >Dockerfile; \
      tar czh . | docker build -t $(FULLNAME):$(VERSION) --rm -; docker tag -f $(FULLNAME):$(VERSION) $(FULLNAME):latest; \
-     rm setup/this_version.inc; \
+     rm -f setup/this_version.inc; \
      [ -f Dockerfile.tpl ] && rm Dockerfile
 DOCKER_REBUILD=\
      echo "IMAGE_NAME=$(FULLNAME)" | cat $(TOPLEV_DIR)/include/version.inc - >setup/this_version.inc; \
      [ -f Dockerfile.tpl ] && sed "s|FROM chapdev/|FROM $(IMAGE_NAMESPACE)/|" <Dockerfile.tpl >Dockerfile; \
      tar czh . | docker build -t $(FULLNAME):$(VERSION) --no-cache=true --rm -; docker tag -f $(FULLNAME):$(VERSION) $(FULLNAME):latest; \
-     rm setup/this_version.inc; \
+     rm -f setup/this_version.inc; \
      [ -f Dockerfile.tpl ] && rm Dockerfile
 
 RUN_TESTS=test-driver tests $(IMAGE_NAMESPACE) $(BASENAME) $(TOPLEV_DIR)/test_logs
