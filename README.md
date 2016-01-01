@@ -20,8 +20,10 @@ In addition, these images are designed for leaner deployments, and are based upo
    [Docker Hub as chaperone-alpinebase](https://registry.hub.docker.com/u/chapdev/chaperone-alpinebase).
  * chaperone-alpinejava (A 210MB Alpine image containing Oracle Java 8 and Python3, managed by Chaperone. On
    [Docker Hub as chaperone-alpinejava](https://registry.hub.docker.com/u/chapdev/chaperone-alpinejava).
- * alpine-nginx-php (A 75MB lpine image containing Nginx, PHP, Python3, managed by Chaperone. On
+ * alpine-nginx-php (A 75MB Alpine image containing Nginx, PHP, Python3, managed by Chaperone. On
    [Docker Hub as alpine-nginx-php](https://registry.hub.docker.com/u/chapdev/alpine-nginx-php).
+ * alpine-nginx-django (A 87MB Apine image containing Nginx, uWSGI, Python3, and Django 1.9, managed by Chaperone. On
+   [Docker Hub as alpine-nginx-django](https://registry.hub.docker.com/u/chapdev/alpine-nginx-django).
    
 Chaperone is a lightweight process manager specifically designed as an ENTRYPOINT for Docker containers that runs as PID 1.
 As a single controlling process, it provides:

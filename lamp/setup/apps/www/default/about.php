@@ -15,8 +15,8 @@ function highlight($instr, $words) {
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     
     <link rel="stylesheet" type="text/css" href="style.css" />
-    <link href='http://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,700,400italic,700italic&subset=latin,latin-ext' rel='stylesheet' type='text/css' />
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,700,400italic,700italic&subset=latin,latin-ext' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Merriweather:400,300,300italic,700,400italic,700italic&subset=latin,latin-ext' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,700,400italic,700italic&subset=latin,latin-ext' rel='stylesheet' type='text/css' />
 
   </head>
   <body class="landing-page  wsite-theme-light  wsite-page-index"><div class="top-background">

@@ -19,3 +19,7 @@
 < startup.d
 < var
 < www
+>wget -O - http://localhost:8080/sample.html | fgrep drwxr-xr-x
+< django_sample
+< sites.d
+< uwsgi.d

@@ -1,22 +1,22 @@
 #!/usr/bin/env expect-test-command
 
 >TASK get-help
-<for Image: $EL_TEST_NAMESPACE/alpine-nginx-php
-<there will be a default sample site
+<for Image: $EL_TEST_NAMESPACE/alpine-nginx-django
+<there will be a default sample Django site
 >TASK get-launcher | sh
-<The run-alpine-nginx-php.sh script is a quick-start for launching
+<The run-alpine-nginx-django.sh script is a quick-start for launching
 <visible at http://localhost:8080/
->./run-alpine-nginx-php.sh
+>./run-alpine-nginx-django.sh
 <ll be killed when '/bin/bash' exits
 >netstat -na
 <Local Address
 <:8080
 </dev/log
 >exit
->sed -e 's/PORT=8080/PORT=7777/' -i run-alpine-nginx-php.sh
->EXT_SSL_HOSTNAME=testhost.example.com ./run-alpine-nginx-php.sh
+>sed -e 's/PORT=8080/PORT=7777/' -i run-alpine-nginx-django.sh
+>EXT_SSL_HOSTNAME=testhost.example.com ./run-alpine-nginx-django.sh
 >fgrep 'new private key' $VAR_DIR/log/syslog.log
 <ssl-cert-snakeoil.key
 >exit
->./run-alpine-nginx-php.sh --task get-help
+>./run-alpine-nginx-django.sh --task get-help
 <visible at http://localhost:7777/

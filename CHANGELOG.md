@@ -1,3 +1,9 @@
+## 1.0.14 (2016-01-01)
+
+Improvements:
+
+- Added alpine-nginx-django image.
+
 ## 1.0.13 (2015-11-11)
 
 Improvements:
