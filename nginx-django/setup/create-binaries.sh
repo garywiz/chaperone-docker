@@ -26,16 +26,16 @@ useradd -u $uid usetup
 
 echo Install all development tools...
 apt-get update
-apt-get install -y git python3-dev
+apt-get install -y curl python3-dev python3-pip
 
 echo Build binary versions of needed modules...
 mkdir /build
-git clone https://github.com/dvarrazzo/py-setproctitle.git
-cd py-setproctitle
+curl -SL https://github.com/unbit/uwsgi/archive/2.0.12.tar.gz | tar xzf -
+cd uwsgi-2.0.12
 python3 setup.py bdist
 
-ls -lR dist
 echo Copy them to our shared mount bin...
-su usetup -c 'mkdir -p /setup/lib; cp -v setproctitle-*.gz /setup/lib/setproctitle-install.tar.gz'
+cd dist
+su usetup -c 'mkdir -p /setup/lib; cp -v uWSGI-*.gz /setup/lib/uwsgi-install.tar.gz'
 
 EOF

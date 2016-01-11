@@ -9,6 +9,7 @@ export LC_ALL=C
 
 df
 yum update -y
+yum install -y epel-release	# needed for python3.4
 yum install -y sudo passwd nano openssl
 df
 
@@ -17,13 +18,12 @@ df
 
 echo "ALL ALL=NOPASSWD: ALL" >>/etc/sudoers    
 
-# Install python
-mkdir /setup-baseimage/build; cd /setup-baseimage/build
-curl -O http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
-rpm -ivh epel-release-*
+# Install python and pip3
 yum install -y python34
+cd /root
 curl -s "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
 python3.4 get-pip.py
+rm get-pip.py
 
 # set up symlinks
 cd /usr/bin
@@ -53,7 +53,7 @@ cp /setup-baseimage/dot.bashrc /root/.bashrc
 # if needed (see mysql in chaperone-lamp for an example).  At the end of the first startup
 # this is then locked down by apps/etc/init.sh.
 passwd -d root
-sed -i 's/nullok_secure/nullok/' /etc/pam.d/common-auth
+[ -f /etc/pam.d/common-auth ] && sed -i 's/nullok_secure/nullok/' /etc/pam.d/common-auth
 
 # Create default /apps directory and version file
 cp -a /setup-baseimage/apps /

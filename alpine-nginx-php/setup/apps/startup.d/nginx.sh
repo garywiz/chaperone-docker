@@ -4,7 +4,9 @@
 puser=${USER:-www-data}
 needs_perm="/var/log/nginx $VAR_DIR/etc $VAR_DIR/sites.d"
 
-function dolog() { logger -t mysql.sh -p info $*; }
+[ -f /var/lib/dpkg/lock ] && needs_perm="$needs_perm /var/lib/dpkg/lock"  # for ubuntu, not alpine
+
+function dolog() { logger -t nginx.sh -p info $*; }
 
 if [ $CONTAINER_INIT == 1 ]; then
   dolog setting nginx user permissions for "$puser"

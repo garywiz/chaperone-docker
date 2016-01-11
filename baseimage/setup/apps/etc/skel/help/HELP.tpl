@@ -1,6 +1,6 @@
 Help for Image: %(PARENT_IMAGE) Version %(IMAGE_VERSION) 
      Chaperone: %(`chaperone --version | awk '/This is/{print $5}'`)
-         Linux: %(`cat /etc/issue | head -1 | sed -e 's/Welcome to //' -e 's/ \\.*$//'`)
+         Linux: %(`( cat /etc/system-release 2>/dev/null || cat /etc/issue ) | head -1 | sed -e 's/Welcome to //' -e 's/ \\.*$//'`)
 
 This is a minimal Chaperone image to use as a starting-point
 for creating Docker containers.  It contains basic configuration templates,

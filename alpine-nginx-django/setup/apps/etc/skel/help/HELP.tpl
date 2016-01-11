@@ -4,7 +4,7 @@ Help for Image: %(PARENT_IMAGE) Version %(IMAGE_VERSION)
      Chaperone: %(`chaperone --version | awk '/This is/{print $5}'`)
          Linux: %(`cat /etc/issue | head -1 | sed -e 's/Welcome to //' -e 's/ \\.*$//'`)
 
-This image contains an Alpine Linux Nginx/uwsgi/Django server stack as a starting
+This image contains an Nginx/uwsgi/Django server stack as a starting
 point for application development.  
 
 When you launch the container, there will be a default sample Django site

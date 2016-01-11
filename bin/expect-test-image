@@ -2,4 +2,4 @@
 
 export EL_SHELL="expect-lite-run"
 export EL_include_dir="$TOPLEV_DIR/include"
-exec expect-lite $1
+exec expect-lite timeout_multiplier=${EL_timeout_multiplier:-1} $1

@@ -27,6 +27,12 @@ if [ "`which expect-lite`" == "" ]; then
    exit 1
 fi
 
+if [ -f /var/run/docker.pid ]; then
+    if [[ "`ps --no-headers -p \`cat /var/run/docker.pid\` -o command`" =~ devicemapper ]]; then
+	export EL_timeout_multiplier=2 # devicemapper takes a long time to destroy an image
+    fi
+fi
+
 mkdir -p $LOGDIR
 
 (

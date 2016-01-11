@@ -67,8 +67,10 @@ do_apt_install nano curl less vim psmisc gettext
 # Install prebuilt binaries
 (cd /; tar xzf /setup-baseimage/lib/setproctitle-install.tar.gz)
 
-# Install pip and chaperone
+# Install and upgrade pip, then chaperone
 do_apt_install python3-pip
+pip3 install -U pip
+
 $BUILD_CHAPERONE_INSTALL # normally 'pip3 install chaperone' located in buildenv.inc
 
 # Now, just so there is no confusion, create a new, empty /var/log directory so that any logs
