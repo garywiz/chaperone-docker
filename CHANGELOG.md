@@ -1,3 +1,9 @@
+## 1.0.15 (2016-01-01)
+
+Improvements:
+
+- Added nginx-django Ubuntu 14.04 image.
+
 ## 1.0.14 (2016-01-01)
 
 Improvements:

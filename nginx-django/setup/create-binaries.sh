@@ -34,6 +34,7 @@ curl -SL https://github.com/unbit/uwsgi/archive/2.0.12.tar.gz | tar xzf -
 cd uwsgi-2.0.12
 python3 setup.py bdist
 
+ls -lR dist
 echo Copy them to our shared mount bin...
 cd dist
 su usetup -c 'mkdir -p /setup/lib; cp -v uWSGI-*.gz /setup/lib/uwsgi-install.tar.gz'

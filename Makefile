@@ -4,7 +4,7 @@ include include/version.inc
 targets1=baseimage apache lamp lemp alpinebase alpinejava centosbase
 
 # targets2 are just prefixed with namespace/
-targets2=alpine-nginx-php alpine-nginx-django
+targets2=alpine-nginx-php alpine-nginx-django alpine-nginx
 
 TARGETS=$(targets1) $(targets2)
 DHREPOS=$(foreach name,$(targets1),$(IMAGE_NAMESPACE)/chaperone-$(name)) \

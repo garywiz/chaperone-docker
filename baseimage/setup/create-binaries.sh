@@ -36,6 +36,7 @@ python3 setup.py bdist
 
 ls -lR dist
 echo Copy them to our shared mount bin...
+cd dist
 su usetup -c 'mkdir -p /setup/lib; cp -v setproctitle-*.gz /setup/lib/setproctitle-install.tar.gz'
 
 EOF
