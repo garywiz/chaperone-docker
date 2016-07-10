@@ -6,8 +6,8 @@
 # Install Java requirements
 
 JAVA_VERSION=8
-JAVA_UPDATE=60
-JAVA_BUILD=27
+JAVA_UPDATE=92
+JAVA_BUILD=14
 JAVA_HOME=/usr/lib/jvm/java${JAVA_VERSION}-u${JAVA_UPDATE}b${JAVA_BUILD}
 
 TMP=/setup-alpinejava/tmp
@@ -20,11 +20,11 @@ mkdir $TMP
 apk add --update wget ca-certificates
 
 cd $TMP
-wget --progress=dot:mega \
- "https://circle-artifacts.com/gh/andyshinn/alpine-pkg-glibc/6/artifacts/0/home/ubuntu/alpine-pkg-glibc/packages/x86_64/glibc-2.21-r2.apk" \
- "https://circle-artifacts.com/gh/andyshinn/alpine-pkg-glibc/6/artifacts/0/home/ubuntu/alpine-pkg-glibc/packages/x86_64/glibc-bin-2.21-r2.apk"
 
-apk add --allow-untrusted glibc-2.21-r2.apk glibc-bin-2.21-r2.apk
+apk --no-cache add ca-certificates
+wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub
+wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.23-r3/glibc-2.23-r3.apk
+apk add glibc-2.23-r3.apk
 
 /usr/glibc/usr/bin/ldconfig /lib /usr/glibc/usr/lib
 
