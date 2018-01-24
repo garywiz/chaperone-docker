@@ -1,6 +1,6 @@
 # Ubuntu and Alpine Docker images which use the Chaperone process manager
 
-This repository is used to build several base-iamges which use the
+This repository is used to build several base-images which use the
 [Chaperone](http://garywiz.github.io/chaperone/guide/chap-intro.html) lightweight process manager.
 
 Several images are included based upon Ubuntu 14.04:
